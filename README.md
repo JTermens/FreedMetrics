@@ -3,4 +3,4 @@ FreedMetrics is a free and open web application to analyse article-level metrics
 
 For mor information, please contact us at freedmetrics@gmail.com
 
-**Authors:** Òscar Camacho, Miguel Luengo, Davad Sotillo and Joan Térmens
+**Authors:** Òscar Camacho, Miguel Luengo, David Sotillo and Joan Térmens
