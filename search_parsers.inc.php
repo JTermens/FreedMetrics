@@ -297,13 +297,8 @@ function pubmed_by_link($link){
 
 
 
-$user_query = "breast cancer";
-
-print_r(pubmed_search($user_query));
-
-$user_query = "Universal voter model emergence in genetically labeled homeostatic tissues";
-
-print_r(arxiv_search($user_query,"ti"));
-
-
+#$user_query = "breast cancer";
+#print_r(pubmed_search($user_query));
+#$user_query = "Universal voter model emergence in genetically labeled homeostatic tissues";
+#print_r(arxiv_search($user_query,"ti"));
 
