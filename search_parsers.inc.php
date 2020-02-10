@@ -156,149 +156,263 @@ $arxiv_keyword_ref = array(
 	'stat.TH' => 'Statistics Theory',
 );
 
-$max_results = 10;
+$month_ref = array(
+	'01' => '01',
+	'Jan' => '01',
+	'January' => '01',
+	'02' => '02',
+	'Feb' => '02',
+	'February' => '02',
+	'03' => '03',
+	'Mar' => '03',
+	'March' => '03',
+	'04' => '04',
+	'Apr' => '04',
+	'April' => '04',
+	'05' => '05',
+	'May' => '05',
+	'06' => '06',
+	'Jun' => '06',
+	'June' => '06',
+	'07' => '07',
+	'Jul' => '07',
+	'July' => '07',
+	'08' => '08',
+	'Aug' => '08',
+	'August' => '08',
+	'09' => '09',
+	'Sept' => '09',
+	'September' => '09',
+	'Sep' => '09',
+	'10' => '10',
+	'Oct' => '10',
+	'October' => '10',
+	'11' => '11',
+	'Nov' => '11',
+	'November' => '11',
+	'12' => '12',
+	'Dec' => '12',
+	'December' => '12'
+);
+
+$max_results = 50;
 
 function arxiv_search($user_query,$field){
 
+	global $month_ref;
 	global $arxiv_keyword_ref; # dictionary with arXiv's keyword references
 
-	# will count the number of entries found
-	$entry_count = 0;
+	$entry_count = 0; # will count the number of entries found
 
-	# dictionary with the parsed entries
-	$arxiv_entries = array();
+	$arxiv_entries = array(); # dictionary with the parsed entries
 
-	$base_url = "http://export.arxiv.org/api/query?";
+	$base_url = 'http://export.arxiv.org/api/query?';
 
 	# Search parameters
 	$start = 0;
 	global $max_results;
 
 	# Query construction
-	$query = "search_query=".$field.":".preg_replace("/\s+/", "+", $user_query)."&start=".$start."&max_results=".$max_results;
+	$query = "search_query=$field:".preg_replace('/\s+/', '+', $user_query)."&start=$start&max_results=$max_results";
 
-	$feed = file_get_contents($base_url.$query);
+	$feed = file_get_contents($base_url.$query); # get xml from the api
 
-	preg_match_all('#<entry>(.+?)</entry>#is', $feed, $entries,PREG_UNMATCHED_AS_NULL);
+	# parse entries from whole xml
+	preg_match_all('/<entry>(.+?)<\/entry>/is', $feed, $entries,PREG_UNMATCHED_AS_NULL);
 
 	if(empty($entries)){
 		return arxiv_entries;
 	}
 
 	foreach ($entries[1] as $entry) {
+
+		#print $entry."\n\n\n";
 		$entry_count += 1;
 
-		preg_match('#<id>(.+?)</id>#is', $entry, $link);
-		preg_match('#<updated>(.+?)</updated>#is', $entry, $update_date);
-		preg_match('#<published>(.+?)</published>#is', $entry, $publish_date);
-		preg_match('#<title>(.+?)</title>#is', $entry, $title);
-		preg_match('#<summary>(.+?)</summary>#is', $entry, $abstract);
-		preg_match_all('#<name>(.+?)</name>#is', $entry, $authors);
-		preg_match_all('#<category term="(.+?)" scheme=#is', $entry, $keywords_ref);
-
-		preg_match('#">(.+?)</arxiv:doi>#is', $entry, $doi, PREG_UNMATCHED_AS_NULL);
-		if(empty($doi)){$doi[1] = '';}
-
-		preg_match('#<arxiv:journal_ref xmlns:arxiv="http://arxiv.org/schemas/atom">(.+?)</arxiv:journal_ref>#is', $entry, $journal, PREG_UNMATCHED_AS_NULL);
-		if(empty($journal)){$journal[1] = '';}
-
-
-
-		foreach ($keywords_ref[1] as $ref){
-			if(in_array($ref,array_keys($arxiv_keyword_ref))){ # filter MSC classes
-				$keywords[] = $arxiv_keyword_ref["$ref"]; # translate keyword references
+		# parse each entry
+		preg_match('/<id>(.+?)<\/id>/is', $entry, $link); # link
+		preg_match('/<title>(.+?)<\/title>/is', $entry, $title); # title
+		preg_match('/<summary>(.+?)<\/summary>/is', $entry, $abstract, PREG_UNMATCHED_AS_NULL); # abstract
+		if(empty($abstract)){$abstract[1] = '';}
+		preg_match_all('/<name>(.+?)<\/name>/is', $entry, $authors); # authors
+		preg_match_all('/<category term="(.+?)" scheme=/is', $entry, $keywords_ref, PREG_UNMATCHED_AS_NULL); # keyword references
+		if(empty($keywords_ref)){
+			$keywords = '';
+		}else{
+			$keywords = array();
+			foreach ($keywords_ref[1] as $ref) {
+				if(array_key_exists($ref, $arxiv_keyword_ref)){
+					$keywords[] = $arxiv_keyword_ref[$ref];
+				}
 			}
 		}
 
-		$entry = array(
+		preg_match('/">(.+?)<\/arxiv:doi>/is', $entry, $doi, PREG_UNMATCHED_AS_NULL); # doi, if any
+		if(empty($doi)){$doi[1] = '';}
+
+		# construct entry dict
+		$entry = array( 
 			'title' => $title[1],
 			'link' => $link[1],
 			'doi' => $doi[1],
-			'journal' => $journal[1],
-			'update date' => $update_date[1],
-			'publish date' => $publish_date[1],
+			'journal' => '',
 			'abstract' => $abstract[1],
 			'authors' => $authors[1],
 			'keywords' => $keywords,
+			'source' => 'arxiv',
+ 			'source_id' => $id[1],
 			);
 		
+		# append to entries dict
 		$arxiv_entries["entry$entry_count"] = $entry;
 	}
 	return $arxiv_entries;
 }
 
-function pubmed_search($user_query){
-	# will count the number of entries found
-	$entry_count = 0;
+function pubmed_search($user_query,$field){
 
+	global $month_ref;
+	
+	$entry_count = 0; # will count the number of entries found
+
+	$pubmed_entries = array(); # dictionary with the parsed entries
+
+	$base_url_search = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?';
+
+	$base_url_fetch = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?';
+
+	# Search parameters 
+	$database = 'pubmed';
 	global $max_results;
+	$tool = 'FreedMetrics';
+	$email = 'freedmetrics@gmail.com';
+	$history = 'y';
 
-	# dictionary with the parsed entries
-	$pubmed_entries = array();
+	# Search Query Construction
+	$query_search = "db=$database&term=".preg_replace('/\s+/', '+', $user_query)."&field=$field&retmax=$max_results&tool=$tool&email=$email&usehistory=$history";
 
-	$base_url_api = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi";
-	$base_url_pubmed = "https://www.ncbi.nlm.nih.gov/pubmed/";
+	$feed_search = file_get_contents($base_url_search.$query_search); # get xml from search api
 
-	# query construction
-	$query = "?db=pubmed&term=".preg_replace("/\s+/", "+", $user_query)."&retmax=".$max_results;
+	preg_match('/<WebEnv>(\S+)<\/WebEnv>/', $feed_search, $webenv);
+	preg_match('/<QueryKey>(\d+)<\/QueryKey>/', $feed_search, $query_key);
 
-	$feed_api = file_get_contents($base_url_api.$query);
+	# fetch parameters
+	$webenv = $webenv[1];
+	$query_key = $query_key[1];
+	$mode = 'xml';
 
-	preg_match_all('#<Id>(.+?)</Id>#is', $feed_api, $entries,PREG_UNMATCHED_AS_NULL);
+	# fetch Query Construction
+	$query_fetch = "db=$database&query_key=$query_key&query_key=$query_key&WebEnv=$webenv&retmode=$mode&retmax=$max_results&tool=$tool&email=$email";
+
+	$feed_fetch = file_get_contents($base_url_fetch.$query_fetch); # get xml from fetch api
+
+	# parse entries from whole xml
+	preg_match_all('/<PubmedArticle>(.+?)<\/PubmedArticle>/is', $feed_fetch, $entries,PREG_UNMATCHED_AS_NULL);
 
 	if(empty($entries)){
-		return $pubmed_entries;
+		return pubmed_entries;
 	}
 
-	foreach ($entries[1] as $id) {
+	foreach ($entries[1] as $entry) {
 		$entry_count += 1;
 
-		$feed_pubmed = file_get_contents($base_url_pubmed.$id);
-		preg_match('#<h1>(.+?)</h1>#is', $feed_pubmed, $title);
-		preg_match('#doi: (.+?) #is', $feed_pubmed, $doi);
-		preg_match_all("#_uid=$id\">(.+?)</a><sup>#is", $feed_pubmed, $authors);
+		# parse each entry
+		preg_match('/<PMID(.+?)\/PMID>/is', $entry, $id); # id
+		preg_match('/>(.+?)</is', $id[1], $id);
+		preg_match('/<Journal>(.+?)<\/Journal>/is', $entry, $journal_raw);
+			preg_match('/<Title>(.+?)<\/Title>/is', $journal_raw[1], $journal); # journal
+			preg_match('/<Year>(.+?)<\/Year>/is', $journal_raw[1], $year); # year
 
-		$entry = array(
+			preg_match('/<Month>(.+?)<\/Month>/is', $journal_raw[1], $month, PREG_UNMATCHED_AS_NULL); # month
+			preg_match('/<Day>(.+?)<\/Day>/is', $journal_raw[1], $day, PREG_UNMATCHED_AS_NULL); # day
+
+			if(empty($month)){$month = '';}else{$month = $month_ref[$month[1]];}
+			if(empty($day)){$day = '';}else{$day = $day[1];}
+			if(empty($year)){$year = '';}else{$year = $year[1];}
+
+			$publish_date = $day.'/'.$month.'/'.$year; # date of publish
+
+		preg_match('/<ArticleTitle>(.+?)<\/ArticleTitle>/is', $entry, $title); # title
+		preg_match_all('/<AbstractText(.+?)<\/AbstractText>/is', $entry, $abstract_raw, PREG_UNMATCHED_AS_NULL); # abstract
+		if(empty($abstract_raw)){
+			$abstract[1] = '';
+		}
+		else{
+			$abstract = '';
+			foreach ($abstract_raw[1] as $abstract_piece) {
+				preg_match('/>(.*)/is', $abstract_piece, $text);
+				preg_match('/Label="(.+?)"/is', $abstract_piece, $label, PREG_UNMATCHED_AS_NULL);
+				if (empty($label)) {
+					$abstract.=$text[1]."\n";
+				}else{
+					$abstract.='<b>'.$label[1].':</b>'.$text[1]."\n";
+				}
+			}
+
+		}
+
+		preg_match_all('/<Author(.+?)<\/Author>/is', $entry, $authors_raw); # authors
+
+			$authors = array();
+			foreach ($authors_raw[1] as $author_raw) {
+				preg_match('/<LastName>(.+?)<\/LastName>/is', $author_raw, $last_name, PREG_UNMATCHED_AS_NULL); # last name
+				preg_match('/<ForeName>(.+?)<\/ForeName>/is', $author_raw, $fore_name, PREG_UNMATCHED_AS_NULL); # fore name
+				if(empty($last_name) && empty($fore_name)){
+					preg_match('/<CollectiveName>(.+?)<\/CollectiveName>/is', $author_raw, $col_name); # collective name exceptions
+					$authors[] = $col_name[1];
+				}elseif (empty($last_name)) {
+					$authors[] = $fore_name[1];
+				}elseif (empty($fore_name)) {
+					$authors[] = $last_name[1];
+				}else{
+					$authors[] = $fore_name[1].' '.$last_name[1];
+				}
+			}
+
+		preg_match('/<ArticleId IdType="doi">(.+?)<\/ArticleId>/is', $entry, $doi, PREG_UNMATCHED_AS_NULL); # doi
+		if(empty($doi)){ $doi[1] = '';}
+
+		preg_match_all('/<Keyword (.+?)<\/Keyword>/is', $entry, $keywords_raw, PREG_UNMATCHED_AS_NULL); # keywords
+		if(empty($keywords_raw)){ 
+			$keywords = '';
+		}else{
+			foreach ($keywords_raw[1] as $keyword_raw) {
+				preg_match('/>(.*)/is', $keyword_raw, $keyword);
+				$keywords[] = $keyword[1];
+			}
+		}
+
+		# construct entry dict
+		$entry = array( 
 			'title' => $title[1],
-			'link' => $base_url_pubmed.$id,
+			'link' => 'https://www.ncbi.nlm.nih.gov/pubmed/'.$id[1], 
 			'doi' => $doi[1],
-			'authors' => $authors[1],
+			'journal' => $journal[1],
+			'publish date' => $publish_date,
+			'abstract' => $abstract,
+			'authors' => $authors,
+			'keywords' => $keywords,
+			'source' => 'pubmed',
+			'source_id' => $id[1],
 			);
+
+		# append to entries dict
 		$pubmed_entries["entry$entry_count"] = $entry;
 	}
-
+	print $base_url_fetch.$query_fetch;
 	return $pubmed_entries;
 }
 
-function pubmed_by_link($link){
-	$feed_pubmed = file_get_contents($link);
-	
-	preg_match('#<h1>(.+?)</h1>#is', $feed_pubmed, $title);
-	preg_match('#doi: (.+?) #is', $feed_pubmed, $doi);
-	preg_match("#<a href=\"\#\" title=\"(.+?)\" abstractLink#is", $feed_pubmed, $journal);
-	preg_match('#alsec="jour" alterm="(.+?)">#is', $feed_pubmed, $journ_abr);
-	preg_match("#>$journ_abr[1]</a> (.+?);#is", $feed_pubmed, $publish_date);
-	preg_match('#</h3><div class=""><p>(.+?)</p><p class="copyright">#is', $feed_pubmed, $abstract);
-	preg_match('#</h4><p>(.+?)</p></div>#is', $feed_pubmed, $keywords);
-	preg_match_all("#_uid=$id\">(.+?)</a><sup>#is", $feed_pubmed, $authors);
 
-	$entry = array(
-		'title' => $title[1],
-		'link' => $base_url_pubmed.$id,
-		'doi' => $doi[1],
-		'journal' => $journal[1],
-		'publish date' => $publish_date[1],
-		'abstract' => $abstract[1],
-		'authors' => $authors[1],
-		'keywords' => explode('; ', $keywords[1]),
-		);
-	return $entry;
-}
+#function test
 
+#print "PUBMED RESULTS\n\n\n";
 
+#$user_query = "Cancer";
+#print_r(pubmed_search($user_query,"title"));
 
-#$user_query = "breast cancer";
-#print_r(pubmed_search($user_query));
-#$user_query = "Universal voter model emergence in genetically labeled homeostatic tissues";
+#print "ARXIV RESULTS\n\n\n";
+
+#$user_query = "Quantum mechanics";
 #print_r(arxiv_search($user_query,"ti"));
 
