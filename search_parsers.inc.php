@@ -246,6 +246,9 @@ function arxiv_search($user_query,$field){
 				}
 			}
 		}
+		
+		$id_raw = explode('/', $link[1]);
+		$id = explode('v', $id_raw[count($id_raw)-1])[0];
 
 		preg_match('/">(.+?)<\/arxiv:doi>/is', $entry, $doi, PREG_UNMATCHED_AS_NULL); # doi, if any
 		if(empty($doi)){$doi[1] = '';}
@@ -253,14 +256,14 @@ function arxiv_search($user_query,$field){
 		# construct entry dict
 		$entry = array( 
 			'title' => $title[1],
-			'link' => $link[1],
+			'url' => $link[1],
 			'doi' => $doi[1],
 			'journal' => '',
 			'abstract' => $abstract[1],
 			'authors' => $authors[1],
 			'keywords' => $keywords,
 			'source' => 'arxiv',
- 			'source_id' => $id[1],
+ 			'source_id' => $id,
 			);
 		
 		# append to entries dict
@@ -385,10 +388,10 @@ function pubmed_search($user_query,$field){
 		# construct entry dict
 		$entry = array( 
 			'title' => $title[1],
-			'link' => 'https://www.ncbi.nlm.nih.gov/pubmed/'.$id[1], 
+			'url' => 'https://www.ncbi.nlm.nih.gov/pubmed/'.$id[1], 
 			'doi' => $doi[1],
 			'journal' => $journal[1],
-			'publish date' => $publish_date,
+			'article_date' => $publish_date,
 			'abstract' => $abstract,
 			'authors' => $authors,
 			'keywords' => $keywords,
