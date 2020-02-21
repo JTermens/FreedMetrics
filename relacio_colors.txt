@@ -1,0 +1,66 @@
+Logos:
+
+	*color1: color de la vista dreta del logo
+	*color2: color de la vista esquerra del logo
+	*color3: color de la vista superior del logo
+	*color fons: color del fons
+
+Logo 1:
+	*color 1: #f4b60d !taronja clar
+	*color 2: #000000 !negre
+	*color 3: #6b6b6b !gris fosc 1
+	*color fons: #f47f0d !taronja mig
+
+Logo 2:
+	*color 1: #ffffff !blanc
+	*color 2: #000000 !negre
+	*color 3: #e41a1c !vermell
+	*color fons: #377eb8 !blau fosc 1
+
+Logo 3:
+	*color 1: #66c2a4 !verd-blau
+	*color 2: #000000 !negre
+	*color 3: #74c476 !verd clar
+	*color fons: #238b45 !verd fosc 1
+
+Logo 4:
+	*color 1: #f1cc1a !groc mig
+	*color 2: #000000 !negre
+	*color 3: #74c476 !verd clar
+	*color fons: #238b45 !verd fosc 1
+
+Logo 5:
+	*color 1: #f1cc1a !groc mig
+	*color 2: #000000 !negre
+	*color 3: #919191 !gris fosc 2
+	*color fons: #377eb8 !blau fosc
+
+Logo 6:
+	*color 1: #74c476 !verd clar
+	*color 2: #000000 !negre
+	*color 3: #238b45 !verd fosc 1
+	*color fons: #377eb8 !blau fosc
+
+Logo 7:
+	*color 1: #ffffff !blanc
+	*color 2: #000000 !negre
+	*color 3: #919191 !gris fosc 2
+	*color fons: #c41819 !vermell fosc
+
+Logo 8:
+	*color 1: #4aa9f7 !blau mig
+	*color 2: #000000 !negre
+	*color 3: #377eb8 !blau fosc
+	*color fons: #c41819 !vermell fosc
+
+Logo 9:
+	*color 1: #74c476 !verd clar
+	*color 2: #000000 !negre
+	*color 3: #1ba247 !verd fosc 2
+	*color fons: #f47f0d !taronja mig
+
+Logo 10:
+	*color 1: #ff1a1a !vermell clar
+	*color 2: #000000 !negre
+	*color 3: #c41819 !vermell fosc
+	*color fons: #377eb8 !blau fosc
