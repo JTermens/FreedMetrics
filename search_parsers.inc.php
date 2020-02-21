@@ -246,17 +246,19 @@ function arxiv_search($user_query,$field){
 				}
 			}
 		}
-		
-		$id_raw = explode('/', $link[1]);
-		$id = explode('v', $id_raw[count($id_raw)-1])[0];
 
 		preg_match('/">(.+?)<\/arxiv:doi>/is', $entry, $doi, PREG_UNMATCHED_AS_NULL); # doi, if any
 		if(empty($doi)){$doi[1] = '';}
 
+		$id_raw = explode('/', $link[1]);
+
+		$id = explode('v', $id_raw[count($id_raw)-1])[0];
+
+
 		# construct entry dict
 		$entry = array( 
 			'title' => $title[1],
-			'url' => $link[1],
+			'link' => $link[1],
 			'doi' => $doi[1],
 			'journal' => '',
 			'abstract' => $abstract[1],
@@ -379,6 +381,7 @@ function pubmed_search($user_query,$field){
 		if(empty($keywords_raw)){ 
 			$keywords = '';
 		}else{
+			$keywords = array();
 			foreach ($keywords_raw[1] as $keyword_raw) {
 				preg_match('/>(.*)/is', $keyword_raw, $keyword);
 				$keywords[] = $keyword[1];
@@ -388,10 +391,10 @@ function pubmed_search($user_query,$field){
 		# construct entry dict
 		$entry = array( 
 			'title' => $title[1],
-			'url' => 'https://www.ncbi.nlm.nih.gov/pubmed/'.$id[1], 
+			'link' => 'https://www.ncbi.nlm.nih.gov/pubmed/'.$id[1], 
 			'doi' => $doi[1],
 			'journal' => $journal[1],
-			'article_date' => $publish_date,
+			'publish date' => $publish_date,
 			'abstract' => $abstract,
 			'authors' => $authors,
 			'keywords' => $keywords,
@@ -402,7 +405,6 @@ function pubmed_search($user_query,$field){
 		# append to entries dict
 		$pubmed_entries["entry$entry_count"] = $entry;
 	}
-	print $base_url_fetch.$query_fetch;
 	return $pubmed_entries;
 }
 
@@ -418,4 +420,6 @@ function pubmed_search($user_query,$field){
 
 #$user_query = "Quantum mechanics";
 #print_r(arxiv_search($user_query,"ti"));
+
+
 
