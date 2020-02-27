@@ -1,0 +1,213 @@
+<?php
+
+function page_head($title){
+
+  global $logo_no_bg;
+
+	return "<!DOCTYPE html>
+<html lang=\"en\">
+
+<head>
+
+  <meta charset=\"utf-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">
+  <meta name=\"description\" content=\"FreedMetrics is a free and open website of scientific article analytics.\">
+  <meta name=\"author\" content=\"Oscar Camacho, Miguel Luengo, David Sotillo and Joan Termens\">
+
+  <title>FreedMetrics - $title</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\">
+
+  <!-- Custom fonts for this template 
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' <link href=\"https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700\" rel=\"stylesheet\">
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'> -->
+
+  <!-- Font Awesome Icons -->
+  <link href=\"tpl/vendor/fontawesome-free/css/all.css\" rel=\"stylesheet\">
+
+  <!-- Datatable css -->
+  <link rel=\"stylesheet\" href=\"tpl/vendor/DataTable/jquery.dataTables.min.css\"/>
+
+  <!-- Custom styles for this template -->
+  <link href=\"tpl/css/creative.css\" rel=\"stylesheet\">
+</head>";
+}
+
+
+function page_header($header,$subheader){
+  global $logo_no_bg;
+
+  return "<body>
+  <!-- Navigation -->
+  <nav class=\"navbar navbar-expand-lg navbar-light fixed-top py-3\" id=\"mainNav\">
+    <div class=\"container\">
+       <img src=\"$logo_no_bg\" alt=\"logo\" width=\"5%\"> 
+      <a class=\"navbar-brand js-scroll-trigger\" href=\"index.php?pagename=Home\">Freedmetrics</a>
+      <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">
+        <span class=\"navbar-toggler-icon\"></span>
+      </button>
+      <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">
+        <ul class=\"navbar-nav ml-auto my-2 my-lg-0\">
+          <form action=\"index.php?pagename=search-results\" id=\"input_search\" name=\"input_search\" method=\"POST\" enctype=\"multipart/form-data\">
+          <div class=\"d-flex justify-content-center h-100\">
+            <li class=\"nav-item\">
+              <input class=\"nav-link js-scroll-trigger nav-search\" type=\"text\" name=\"search_query\" placeholder=\"Search article\">
+            </li>
+            <li class=\"nav-item\">
+              <a href=\"index.php?pagename=search-results\" class=\"nav-link js-scroll-trigger\"><i class=\"fas fa-search\"></i></a>
+            </li>
+          </div>
+        </form>
+          <li class=\"nav-item\">
+            <a class=\"nav-link js-scroll-trigger\" href=\"index.php?pagename=Advanced-Search\">Advanced Search</a>
+          </li>
+          <li class=\"nav-item\">
+            <a class=\"nav-link js-scroll-trigger\" href=\"index.php?pagename=Login\">LOGIN & REGISTER</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Page Header -->
+  <header class=\"masthead_page\">
+    <div class=\"container\">
+      <div class=\"row\">
+        <div class=\"col-lg-8 col-md-10 mx-auto\">
+          <div class=\"page-heading\">
+            <h1>$header</h1>
+            <span class=\"subheading\">$subheader</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>";
+}
+
+function portfolio_view($link,$img_route,$img_alt,$category,$name){
+  return "<div class=\"col-lg-3 col-sm-6\">
+          <a class=\"portfolio-box\" href=\"$link\">
+            <img class=\"img-fluid\" src=\"$img_route\" alt=\"$img_alt\">
+            <div class=\"portfolio-box-caption p-3\">
+              <div class=\"project-category text-white-50\">
+                $category
+              </div>
+              <div class=\"project-name\">
+                $name
+              </div>
+            </div>
+          </a>
+        </div>";
+}
+
+function page_footer(){
+
+  global $lg_width;
+  global $md_width;
+
+	return "<!-- Footer -->
+  <footer>
+    <div class=\"container\">
+      <div class=\"row\">
+        <div class=\"col-lg-$lg_width col-md-$md_width mx-auto\">
+          <ul class=\"list-inline text-center\">
+            <li class=\"list-inline-item\">
+              <a href=\"https://twitter.com/FreedMetrics\" rel=\"noopener noreferrer\" target=\"_blank\">
+                <span class=\"fa-stack fa-lg\">
+                  <i class=\"fas fa-circle fa-stack-2x\"></i>
+                  <i class=\"fab fa-twitter fa-stack-1x fa-inverse\"></i>
+                </span>
+              </a>
+            </li>
+            <li class=\"list-inline-item\">
+              <a href=\"https://github.com/JTermens/FreedMetrics/\" rel=\"noopener noreferrer\" target=\"_blank\">
+                <span class=\"fa-stack fa-lg\">
+                  <i class=\"fas fa-circle fa-stack-2x\"></i>
+                  <i class=\"fab fa-github fa-stack-1x fa-inverse\"></i>
+                </span>
+              </a>
+            </li>
+          </ul>
+          <br>
+          <p class=\"copyright text-muted\">Copyright &copy; FreedMetrics Website ".date("Y")."</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript  -->
+  <script src=\"tpl/vendor/jquery/jquery.min.js\"></script>
+  <script src=\"tpl/vendor/bootstrap/js/bootstrap.bundle.min.js\"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src=\"tpl/js/creative.min.js\"></script>
+
+  <script type=\"text/javascript\" src=\"tpl/vendor/DataTable/jquery-2.2.0.min.js\"></script>
+  <script type=\"text/javascript\" src=\"tpl/vendor/DataTable/jquery.dataTables.min.js\"></script>
+  
+  <script type=\"text/javascript\">
+    $(document).ready(function () {
+        $('#table_arXiv').DataTable();
+    });
+  </script>
+  <script type=\"text/javascript\">
+    $(document).ready(function () {
+        $('#table_PubMed').DataTable();
+    });
+  </script>
+</body>
+</html>";
+}
+
+function results_table($entries,$tag){
+  $table = "<table border=\"0\" cellspacing=\"2\" cellpadding=\"4\" id=\"table_$tag\">
+              <thead>
+                <tr>
+                  <th>Articles</th>
+                </tr>
+              </thead>
+            <tbody>";
+
+  $counter = 0;
+  foreach($entries as $entry) {
+    $counter += 1;
+    $table .= "<tr>
+                  <td>
+                    <h5>
+                      <a href=\"".$entry['link']."\" rel=\"noopener noreferrer\" target=\"_blank\">".$entry['title']."</a>";
+
+    if($entry['doi'] != ''){
+      $table .= "&nbsp<div class=\"doi-label\">DOI</div>";
+    }
+    
+    $table .= "</h5><div style= \"font-style: italic;\">";
+
+    $author_count = 0;
+    foreach ($entry['authors'] as $author) {
+      if ($author_count >= 10) {
+        $table .= "...";
+      }else{
+        $table .= $author.", ";
+      }
+    }
+    
+    $table .="</div>
+              <a class=\"btn expand\" type=\"button\" data-toggle=\"collapse\" data-target=\"#abstract$counter\" aria-expanded=\"false\" aria-controls=\"abstract$counter\" style=\"color: var(--color3)\">Abstract</a>
+
+              <div class=\"collapse\" id=\"abstract$counter\">
+                <div class=\"card card-body text-justify\">
+                  <p>";
+
+    if($entry['abstract'] != ''){
+      $table .= $entry['abstract'];
+    }
+    if($entry['doi'] != ''){
+      $table .= "<br><br><b>DOI: </b><a href=https://dx.doi.org/".$entry['doi']."rel=\"noopener noreferrer\" target=\"_blank\">".$entry['doi']."</a>";
+    }
+
+    $table .= "</p></div></div></td></tr>";
+  }
+  $table .= "</tbody></table>";
+
+  return $table;
+}
