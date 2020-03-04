@@ -24,18 +24,16 @@ function wiki_search($query){
 	
 }
 
+#Example 
 
 $result = wiki_search("Hallmarks of Cancer");
 
 echo ("Referenced " . count($result['query']['search']) . " times in the following articles:" . "<br>");
 
 for ($i=0;$i < count($result['query']['search']);$i++){
-		echo ($result['query']['search'][$i]['title'] . "<br>");
-	}
-
-echo array_values($res);
-
-
+		$link =("https://en.wikipedia.org/wiki/" . preg_replace("/[\s_]/", "_", $result['query']['search'][$i]['title'])); 
+		echo "<a href='" . $link . "'>" . $result['query']['search'][$i]['title'] . "</a>" . "<br>";
+	};
 
 
 
