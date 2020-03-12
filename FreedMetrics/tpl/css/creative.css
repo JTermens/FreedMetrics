@@ -4284,12 +4284,14 @@ header.masthead_page .page-heading .subheading{
   line-height: 40px;
 }
 
-.search_icon:hover{
+button.search_icon:hover{
   background: var(--color1);
   color: white;
   }
 
-.search_icon{
+button.search_icon{
+  border: 0px;
+  background: transparent;
   height: 40px;
   width: 40px;
   float: right;
@@ -4306,3 +4308,17 @@ header.masthead_page .page-heading .subheading{
   background-color: transparent;
   border-radius: 50px;
 }
+
+span.doi-label{
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  padding: 5px;
+  background: var(--color3);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.19);
+}
+
+span.doi-label:hover{
+  background: var(--color1);
+  }

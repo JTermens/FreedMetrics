@@ -2,11 +2,11 @@
 
 $header = "Error";
 $subheader = "Sorry, seems that something went wrong.";
-$title = "FreedMetrics - Not Found";
+$title = "FreedMetrics - Advanced Search";
 
 print(page_head($_SESSION['pagename'],$title));
 
-print(page_header($header, $subheader,1));
+print(page_header($header, $subheader));
 ?>
 <!-- Main Content -->
 <div class="container">

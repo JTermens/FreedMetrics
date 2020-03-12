@@ -4,15 +4,12 @@ include_once('inc/globals.inc.php');
 
 if(array_key_exists('pagename', $_GET)){
     $pagename = $_GET['pagename'];
-
-    $title = $pagename;
-
-    print(page_head($title));
+    $_SESSION['pagename'] = $pagename;
 
     if (array_key_exists($pagename, $pagename_ref)) {
-        include $pagename_ref[$pagename];
+        include $pagename_ref[$pagename]['route'];
     }else {
-        include("$tplDir/page_not_found.php");
+        include $pagename_ref['Not-Found']['route'];
     }
 
     print(page_footer());

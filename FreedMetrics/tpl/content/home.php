@@ -2,26 +2,10 @@
 
 $header = "FreedMetrics";
 $subheader = "A free and open website of scientific article analytics.";
-?>
+$title = 'FreedMetrics - Home';
 
-<body>
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
-  <div class="container">
-    <img src="<?php print $logo_no_bg; ?>" alt="logo" width="5%"> 
-    <a class="navbar-brand js-scroll-trigger" href="index.php?pagename=Home">Freedmetrics</a>
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ml-auto my-2 my-lg-0">
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="index.php?pagename=Login">LOGIN & REGISTER</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+print(page_head($_SESSION['pagename'],$title));
+?>
   <!-- Site Header -->
 <header class="masthead">
   <div class="container h-100">
@@ -46,11 +30,11 @@ $subheader = "A free and open website of scientific article analytics.";
           <h2 class="text-white mt-0">Search and analyse what you need</h2>
           <hr class="divider light my-4">
           <p class="text-white-50 mb-4">FreedMetrics will give you the metadata as well as alt-metrics for the large pool of articles present on arXiv and Pubmed (by now). Give it a try and <a href="index.php?pagename=Register" style="color: white; font-weight: bold;">Register</a> for more tools.</p>
-          <form action="index.php?pagename=search-results" id="input_search" name="input_search" method="POST" enctype="multipart/form-data">
+          <form action="index.php?pagename=Search-Results" id="search_query" name="search_query" method="POST" enctype="multipart/form-data">
             <div class="d-flex justify-content-center h-100">
               <div class="searchbar">
                 <input class="search_input" type="text" name="search_query" placeholder="Enter the article's title, or doi, or author, or ...">
-                <a href="index.php?pagename=search-results" class="search_icon"><i class="fas fa-search"></i></a>
+                <button type="submit" class="search_icon"><i class="fas fa-search"></i></button>
               </div>
             </div>
           </form>

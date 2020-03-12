@@ -64,6 +64,7 @@ function arxiv_search($user_query,$field){
 			'link' => $link[1],
 			'doi' => $doi[1],
 			'journal' => '',
+			'publish_date' => '',
 			'abstract' => $abstract[1],
 			'authors' => $authors[1],
 			'keywords' => $keywords,
@@ -153,7 +154,7 @@ function pubmed_search($user_query,$field){
 				if (empty($label)) {
 					$abstract.=$text[1]."\n";
 				}else{
-					$abstract.='<b>'.$label[1].':</b>'.$text[1]."\n";
+					$abstract.='<b>'.$label[1].':</b>&nbsp'.$text[1]."<br>";
 				}
 			}
 
@@ -197,7 +198,7 @@ function pubmed_search($user_query,$field){
 			'link' => 'https://www.ncbi.nlm.nih.gov/pubmed/'.$id[1], 
 			'doi' => $doi[1],
 			'journal' => $journal[1],
-			'publish date' => $publish_date,
+			'publish_date' => $publish_date,
 			'abstract' => $abstract,
 			'authors' => $authors,
 			'keywords' => $keywords,

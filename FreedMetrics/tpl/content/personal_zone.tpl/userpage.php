@@ -1,8 +1,8 @@
 <?php
 
-$header = "Error";
-$subheader = "Sorry, seems that something went wrong.";
-$title = "FreedMetrics - Not Found";
+$header = "UserPage";
+$subheader = "Wellcome";
+$title = "User Name";
 
 print(page_head($_SESSION['pagename'],$title));
 

@@ -98,3 +98,10 @@
   }
 
 })(jQuery); // End of use strict
+
+function submitForm(id) {
+
+  document.getElementById(id).submit();  
+
+  return true;
+}
