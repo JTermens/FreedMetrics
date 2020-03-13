@@ -8,15 +8,29 @@
 <html>
   <head>
     <title>Log In / Sign In</title>
-    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css "href="style.css">
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/minified/jquery-ui.min.css" type="text/css" />
+    <!-- IMPORTING JQUERY -->
     <script
 			  src="https://code.jquery.com/jquery-3.4.1.js"
 			  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
 			  crossorigin="anonymous"></script>
+    <!-- IMPORTING JQUERY UI -->
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/minified/jquery-ui.min.css" type="text/css" />
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+      // Resolve name collision between jQuery UI and Twitter Bootstrap (they conflict as they use the same name 'tooltip')
+      $.widget.bridge('uitooltip', $.ui.tooltip);
+    </script>
+    <!-- IMPORTING BOOTSTRAP -->
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- IMPORTING CUSTOM CSS -->
+    <link rel="stylesheet" type="text/css "href="style.css">
+    <!-- IMPORTING ICONS -->
     <script src="https://kit.fontawesome.com/45a8aedb40.js" crossorigin="anonymous"></script>
+
+    <style media="screen">
+      .tooltip:hover{opacity:1!important;}
+    </style>
 
     <script type="text/javascript">
       $(document).ready(function(){
@@ -161,8 +175,8 @@
             </div>
 
             <button type="submit" name="submit_button" class="btn btn-primary">Log In</button>
-            <p id="not_registered" style="float:right;font-size:15px;color:red;margin:0px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_registered'){echo 'block;';}else{echo 'none;';} ?>">You are not registered!</p>
-            <p id="not_activated" style="float:right;font-size:15px;color:red;margin:0px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_activated'){echo 'block;';}else{echo 'none;';} ?>">Your account is not activated!</p>
+            <p id="not_registered" style="float:right;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_registered'){echo 'block;';}else{echo 'none;';} ?>">You are not registered!</p>
+            <p id="not_activated" style="float:right;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_activated'){echo 'block;';}else{echo 'none;';} ?>">Your account is not activated!</p>
           </form>
         </div>
         <div class="col-md-6 register">
@@ -186,8 +200,8 @@
 
             <div class="form-group">
               <label>Password</label>
-              <p id="wrong_pass" style="float:right;font-size:12px;color:red;margin:0px;">Password has to be at least 8 characters and contain a
-                <a href="#" data-toggle="tooltip" title=' ` ! @ # $ % ^ &amp; * ( ) _ + - = [ ] { } ; &apos; : &quot; | , . &lt;&gt; / \ ? ~ ' style="color:red;text-decoration:underline;text-decoration-color:red;">special character</a>
+              <p id="wrong_pass" style="float:right;font-size:12px;color:red;margin:2px;">Password has to be at least 8 characters and contain a
+                <a href="#" data-toggle="tooltip" title=' ` ! @ # $ % ^ &amp; * ( ) _ + - = [ ] { } ; &apos; : &quot; | , . &lt;&gt; / \ ? ~ ' data-placement="bottom" style="color:red;text-decoration:underline;text-decoration-color:red;">special character</a>
                 and a number</p>
               <i class="fas fa-check" style="float:right;color:limegreen;" id="p_check"></i>
               <input type="password" name="password" class="form-control required" id="reg_pass" maxlength="20" onkeyup="warnings()" onclick="warnings()">
