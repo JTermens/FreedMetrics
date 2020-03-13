@@ -38,7 +38,7 @@ function arxiv_search($user_query,$field){
 		preg_match('/<summary>(.+?)<\/summary>/is', $entry, $abstract); # abstract
 		if(empty($abstract)){$abstract[1] = '';}
 		preg_match_all('/<name>(.+?)<\/name>/is', $entry, $authors); # authors
-		preg_match_all('/<category term="(.+?)" scheme=/is', $entry, $keywords_ref, PREG_UNMATCHED_AS_NULL); # keyword references
+		preg_match_all('/<category term="(.+?)" scheme=/is', $entry, $keywords_ref); # keyword references
 		if(empty($keywords_ref)){
 			$keywords = '';
 		}else{
@@ -50,7 +50,7 @@ function arxiv_search($user_query,$field){
 			}
 		}
 
-		preg_match('/">(.+?)<\/arxiv:doi>/is', $entry, $doi); # doi, if any
+		preg_match('/<arxiv:doi xmlns:arxiv="http:\/\/arxiv.org\/schemas\/atom">(.+?)<\/arxiv:doi>/is', $entry, $doi); # doi, if any
 		if(empty($doi)){$doi[1] = '';}
 
 		$id_raw = explode('/', $link[1]);
@@ -98,7 +98,7 @@ function pubmed_search($user_query,$field){
 	$history = 'y';
 
 	# Search Query Construction
-	$query_search = "db=$database&term=".preg_replace('/\s+/', '+', $user_query)."&field=$field&retmax=$max_results&tool=$tool&email=$email&usehistory=$history";
+	$query_search = "db=$database&term=".preg_replace('/\s+/', '+', $user_query)."[$field]&retmax=$max_results&tool=$tool&email=$email&usehistory=$history";
 
 	$feed_search = file_get_contents($base_url_search.$query_search); # get xml from search api
 
@@ -111,12 +111,12 @@ function pubmed_search($user_query,$field){
 	$mode = 'xml';
 
 	# fetch Query Construction
-	$query_fetch = "db=$database&query_key=$query_key&query_key=$query_key&WebEnv=$webenv&retmode=$mode&retmax=$max_results&tool=$tool&email=$email";
+	$query_fetch = "db=$database&query_key=$query_key&WebEnv=$webenv&retmode=$mode&retmax=$max_results&tool=$tool&email=$email";
 
 	$feed_fetch = file_get_contents($base_url_fetch.$query_fetch); # get xml from fetch api
 
 	# parse entries from whole xml
-	preg_match_all('/<PubmedArticle>(.+?)<\/PubmedArticle>/is', $feed_fetch, $entries,PREG_UNMATCHED_AS_NULL);
+	preg_match_all('/<PubmedArticle>(.+?)<\/PubmedArticle>/is', $feed_fetch, $entries);
 
 	if(empty($entries)){
 		return pubmed_entries;
