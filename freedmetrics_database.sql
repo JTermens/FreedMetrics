@@ -120,7 +120,6 @@ CREATE TABLE IF NOT EXISTS `freedmetrics`.`Article` (
   `source_id` VARCHAR(45) NULL,
   `wikipedia_references` INT NULL,
   `crossref_references` INT NULL,
-  `readcount_mendeley` INT NULL,
   `pubmed_citations` INT NULL,
   `total_tweets` INT NULL,
   `original_tweets` INT NULL,
