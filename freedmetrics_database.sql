@@ -123,6 +123,7 @@ CREATE TABLE IF NOT EXISTS `freedmetrics`.`Article` (
   `pubmed_citations` INT NULL,
   `total_tweets` INT NULL,
   `original_tweets` INT NULL,
+  `visits` INT DEFAULT 1,
   PRIMARY KEY (`article_id`))
 ENGINE = InnoDB;
 
