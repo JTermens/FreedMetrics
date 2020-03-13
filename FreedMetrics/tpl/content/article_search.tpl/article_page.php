@@ -1,6 +1,13 @@
 <?php
 
+require 'load_database.php';
+
 $article_data = $_SESSION[$_GET['source']][$_GET['article-ref']];
+
+#Load all data to database
+load_database($article_data);
+
+
 
 $title = "FreedMetrics - ".$article_data['title'];
 $header = 'Article page';
