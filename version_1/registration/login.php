@@ -160,11 +160,6 @@
               <input type="password" name="password" class="form-control required">
             </div>
 
-            <div class="form-group">
-              <label>Autocomplete</label>
-              <input type="text" name="autocomplete" class="form-control required" id="ac">
-            </div>
-
             <button type="submit" name="submit_button" class="btn btn-primary">Log In</button>
             <p id="not_registered" style="float:right;font-size:15px;color:red;margin:0px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_registered'){echo 'block;';}else{echo 'none;';} ?>">You are not registered!</p>
             <p id="not_activated" style="float:right;font-size:15px;color:red;margin:0px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_activated'){echo 'block;';}else{echo 'none;';} ?>">Your account is not activated!</p>
