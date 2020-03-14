@@ -9,6 +9,28 @@ function load_database($article_dict) {
 include_once("db_conn.php");
 
 
+#FIRST UPLOAD SOURCE AND JOURNAL TO KNOW THEIR FOREIGN KEYS AND INSERT THEM INTO ARTICLE TABLE
+
+
+  //////////// SOURCE UPLOAD  ////////////
+
+  $source = $article_dict['source'];
+  $sql = "INSERT IGNORE INTO source (source)
+  VALUES ('$source')";
+  $conn->query($sql);
+  $source_id = $conn->insert_id; //gets the last id inserted. Id of the journal
+
+
+  //////////// JOURNAL UPLOAD  ////////////
+
+  $journal = $article_dict['journal'];
+  $sql = "INSERT IGNORE INTO Journal (Name)
+  VALUES ('$journal')";
+  $conn->query($sql);
+  $journal_id = $conn->insert_id; //gets the last id inserted. Id of the journal
+
+
+
 /////////// ARTICLE UPLOAD  ////////////
 
 $source_id = $article_dict['source_id'];
@@ -27,65 +49,25 @@ $total_tweets = total_tweets("\"$title\"");
 $original_tweets = original_tweets("\"$title\"");
 
 
-$sql = "INSERT IGNORE INTO Article (source_id, title, abstract, article_date, url, doi, wikipedia_references, crossref_references, pubmed_citations, total_tweets, original_tweets)
-VALUES ('$source_id', '$title', '$abstract', '$article_date', '$url', '$doi', '$wikipedia_references', '$crossref_references', '$pubmed_citations', '$total_tweets', '$original_tweets')";
+#SELECT SOURCE FOREIGN KEY FROM SOURCE TABLE
+$sql = "SELECT idsource FROM source WHERE source='$source'";
+$result = $conn->query($sql) or die($conn->error);
+$row = $result->fetch_assoc();
+$source_id = $row['idsource'];
+
+
+#SELECT JOURNAL FOREIGN KEY FROM JOURNAL TABLE
+$sql = "SELECT automatic_id_journal FROM Journal WHERE Name='$journal'";
+$result = $conn->query($sql) or die($conn->error);
+$row = $result->fetch_assoc();
+$journal_id = $row['automatic_id_journal'];
+
+
+#INSERT VALUES INTO ARTICLE TABLE
+$sql = "INSERT IGNORE INTO Article (source_id, title, abstract, article_date, url, doi, wikipedia_references, crossref_references, pubmed_citations, total_tweets, original_tweets, Journal_automatic_id_journal, source_idsource)
+VALUES ('$source_id', '$title', '$abstract', '$article_date', '$url', '$doi', '$wikipedia_references', '$crossref_references', '$pubmed_citations', '$total_tweets', '$original_tweets', '$journal_id', '$source_id')";
 $conn->query($sql);
 $article_id = $conn->insert_id; //gets the last id inserted. Id of the article
-
-
-//////////// JOURNAL UPLOAD  ////////////
-
-$journal = $article_dict['journal'];
-$sql = "INSERT IGNORE INTO Journal (Name)
-VALUES ('$journal')";
-$conn->query($sql);
-$journal_id = $conn->insert_id; //gets the last id inserted. Id of the journal
-
-
-//////////// ARTICLE_HAS_JOURNAL UPLOAD  ////////////
-
-if ($journal_id) {
-  $sql = "INSERT INTO Article_has_Journal (Article_article_id, Journal_automatic_id_journal)
-  VALUES ('$article_id', '$journal_id')";
-}
-else {
-  $sql = "SELECT automatic_id_journal FROM Journal WHERE Name='$journal'";
-  $result = $conn->query($sql) or die($conn->error);
-  $row = $result->fetch_assoc();
-  $journal_id = $row['automatic_id_journal'];
-
-  $sql = "INSERT INTO Article_has_Journal (Article_article_id, Journal_automatic_id_journal)
-  VALUES ('$article_id', '$journal_id')";
-}
-$conn->query($sql);
-
-
-
-  //////////// SOURCE UPLOAD  ////////////
-
-  $source = $article_dict['source'];
-  $sql = "INSERT IGNORE INTO source (source)
-  VALUES ('$source')";
-  $conn->query($sql);
-  $source_id = $conn->insert_id; //gets the last id inserted. Id of the journal
-
-
-  //////////// ARTICLE_HAS_SOURCE UPLOAD  ////////////
-
-  if ($source_id) {
-    $sql = "INSERT INTO Article_has_source (Article_article_id, source_idsource)
-    VALUES ('$article_id', '$source_id')";
-  }
-  else {
-    $sql = "SELECT idsource FROM source WHERE source='$source'";
-    $result = $conn->query($sql) or die($conn->error);
-    $row = $result->fetch_assoc();
-    $source_id = $row['idsource'];
-
-    $sql = "INSERT INTO Article_has_source (Article_article_id, source_idsource)
-    VALUES ('$article_id', '$source_id')";
-  }
-  $conn->query($sql);
 
 
 
@@ -125,7 +107,7 @@ $conn->query($sql);
     $conn->query($sql);
     $author_id = $conn->insert_id; //gets the last id inserted. Id of keywords
 
-    /// ARTICLE_HAS_KEYWORDS ///
+    /// PERSONS_HAS_ARTICLE ///
     if ($author_id) {
       $sql = "INSERT INTO Persons_has_Article (Article_article_id, Persons_person_id, is_author)   #notice the is_author is set to TRUE
       VALUES ('$article_id', '$author_id', TRUE)";
