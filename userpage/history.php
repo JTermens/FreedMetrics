@@ -1,28 +1,10 @@
 <?php
-#include_once("$search_incDir/check_and_search.search.php");
 
-function user_history($user_email){
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
+include_once("search_tplDir/db_conn.php");
 
-	##database connection##
+function user_history($user_id){
 
-	$servername = "localhost";
-	$dbusername = "TestUser";
-	// IMPORTANT, NEXT VARIABLE WILL HAVE TO CONTAIN THE PASSWORD FOR THE DATABASE (IF THERE IS NONE, LEAVE EMPTY)
-	$dbpassword = "123456789_AbC";
-	$dbname = "freedmetrics";
-
-	// Create connection
-	$conn = mysqli_connect($servername, $dbusername, $dbpassword, $dbname);
-	// Check connection
-	if (!$conn) {
-	    die("Connection failed: " . mysqli_connect_error());
-	}
-	####
-
-	$query = "SELECT Article_source_id FROM Persons_has_Article WHERE Persons_email ='" . $user_email . "'";
+	$query = "SELECT Article_source_id FROM Persons_has_Article WHERE Persons_email ='" . $user_id . "'";
 	$result = $conn->query($query);
 
 	$articles = array();
