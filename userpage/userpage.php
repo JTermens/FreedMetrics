@@ -17,7 +17,7 @@ print(page_header($header, $subheader,1));
 		<div class="row">
 			<?php
 
-				$entries = user_history("$_SESSION['person_id']");
+				$entries = user_history($_SESSION['person_id']);
 				$tag = "History";
 				
 				if (!count($entries)) {
