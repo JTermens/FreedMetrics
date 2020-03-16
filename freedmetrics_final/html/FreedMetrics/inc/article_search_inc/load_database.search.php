@@ -2,6 +2,39 @@
 
 
 function load_article_database($article_dict,$conn) {
+
+#FIRST UPLOAD SOURCE AND JOURNAL TO KNOW THEIR FOREIGN KEYS AND INSERT THEM INTO ARTICLE TABLE
+
+    //////////// SOURCE UPLOAD  ////////////
+    $source = $article_dict['source'];
+    $sql = "INSERT IGNORE INTO source (source)
+    VALUES ('$source')";
+    $conn->query($sql);
+    $source_id = $conn->insert_id; //gets the last id inserted. Id of the journal
+
+
+    //////////// JOURNAL UPLOAD  ////////////
+    $journal = $article_dict['journal'];
+    $sql = "INSERT IGNORE INTO Journal (Name)
+    VALUES ('$journal')";
+    $conn->query($sql);
+    $journal_id = $conn->insert_id; //gets the last id inserted. Id of the journal
+
+
+    #SELECT SOURCE FOREIGN KEY FROM SOURCE TABLE
+    $sql = "SELECT idsource FROM source WHERE source='$source'";
+    $result = $conn->query($sql) or die($conn->error);
+    $row = $result->fetch_assoc();
+    $id_source = $row['idsource'];
+
+
+    #SELECT JOURNAL FOREIGN KEY FROM JOURNAL TABLE
+    $sql = "SELECT automatic_id_journal FROM Journal WHERE Name='$journal'";
+    $result = $conn->query($sql) or die($conn->error);
+    $row = $result->fetch_assoc();
+    $id_journal = $row['automatic_id_journal'];
+
+
   /////////// ARTICLE UPLOAD  ////////////
 
   $source_id = $article_dict['source_id'];
@@ -11,65 +44,10 @@ function load_article_database($article_dict,$conn) {
   $url = $article_dict['link'];
   $doi = $article_dict['doi'];
 
-  $sql = "INSERT IGNORE INTO Article (source_id, title, abstract, article_date, url, doi, visits)
-  VALUES ('$source_id', '$title', '$abstract', '$article_date', '$url', '$doi','1')";
+  $sql = "INSERT IGNORE INTO Article (source_id, title, abstract, article_date, url, doi, visits, source_idsource, Journal_automatic_id_journal)
+  VALUES ('$source_id', '$title', '$abstract', '$article_date', '$url', '$doi','1', '$id_source', '$id_journal')";
   $conn->query($sql);
   $article_id = $conn->insert_id; //gets the last id inserted. Id of the article
-
-
-  //////////// JOURNAL UPLOAD  ////////////
-
-  $journal = $article_dict['journal'];
-  $sql = "INSERT IGNORE INTO Journal (Name)
-  VALUES ('$journal')";
-  $conn->query($sql);
-  $journal_id = $conn->insert_id; //gets the last id inserted. Id of the journal
-
-
-  //////////// ARTICLE_HAS_JOURNAL UPLOAD  ////////////
-
-  if ($journal_id) {
-    $sql = "INSERT INTO Article_has_Journal (Article_article_id, Journal_automatic_id_journal)
-    VALUES ('$article_id', '$journal_id')";
-  }
-  else {
-    $sql = "SELECT automatic_id_journal FROM Journal WHERE Name='$journal'";
-    $result = $conn->query($sql) or die($conn->error);
-    $row = $result->fetch_assoc();
-    $journal_id = $row['automatic_id_journal'];
-
-    $sql = "INSERT INTO Article_has_Journal (Article_article_id, Journal_automatic_id_journal)
-    VALUES ('$article_id', '$journal_id')";
-  }
-  $conn->query($sql);
-
-
-
-  //////////// SOURCE UPLOAD  ////////////
-
-  $source = $article_dict['source'];
-  $sql = "INSERT IGNORE INTO source (source)
-  VALUES ('$source')";
-  $conn->query($sql);
-  $source_id = $conn->insert_id; //gets the last id inserted. Id of the journal
-
-
-  //////////// ARTICLE_HAS_SOURCE UPLOAD  ////////////
-
-  if ($source_id) {
-    $sql = "INSERT INTO Article_has_source (Article_article_id, source_idsource)
-    VALUES ('$article_id', '$source_id')";
-  }
-  else {
-    $sql = "SELECT idsource FROM source WHERE source='$source'";
-    $result = $conn->query($sql) or die($conn->error);
-    $row = $result->fetch_assoc();
-    $source_id = $row['idsource'];
-
-    $sql = "INSERT INTO Article_has_source (Article_article_id, source_idsource)
-    VALUES ('$article_id', '$source_id')";
-  }
-  $conn->query($sql);
 
 
 
@@ -140,7 +118,7 @@ function refresh_arxiv_doi($article_id, $conn){
   $feed = file_get_contents($base_url.$query); # get xml from the api
 
   preg_match('/<arxiv:doi xmlns:arxiv="http:\/\/arxiv.org\/schemas\/atom">(.+?)<\/arxiv:doi>/is', $entry, $doi); # doi, if any
-  
+
   if(!empty($doi)){
     // Upload to its corresponding article entry
     $doi = $doi[1];
