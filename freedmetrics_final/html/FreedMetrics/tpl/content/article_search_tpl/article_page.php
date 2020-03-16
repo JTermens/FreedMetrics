@@ -36,6 +36,11 @@ print(page_head($_SESSION['pagename'],$title));
 					</div>
 				</div>
 				<br>
+				<div class="row">
+					<?php if (($article_data['journal'] != '') and ($article_data['publish_date'] != '')) { ?>
+						<h6>Published by <i><?php print $article_data['journal']?></i> on <?php print $article_data['publish_date']?></h6> 
+					<?php } ?>
+				</div>
 				<div class="row text-justify">
 					<h3>Abstract:</h3>
 					<p><?php print $article_data['abstract'] ?></p>
@@ -47,14 +52,38 @@ print(page_head($_SESSION['pagename'],$title));
 				   		}?>
 			   		</p>
 				</div>
+				<?php if(!empty($article_data['keywords'])) { ?>
+					<div class="row">
+						<h5><b>Keywords:</b></h5>&nbsp
+						<p>
+							<?php
+								$keywords = '';
+								$keyword_count = 0;
+							    foreach ($article_data['keywords'] as $keyword) {
+							      $keyword_count += 1;
+							      if ($keyword_count == count($article_data['keywords']) ) {
+							        $keywords .= $keyword;
+							        break;
+							      }else{
+							        $keywords .= $keyword.", ";
+							      }
+							    }
+							    print $keywords;
+							?>
+						</p>
+					</div>
+					<br>
+				<?php } ?>
 				<div class="row">
 					<div class="col-10">
-						<h3>Metrics:</h3>
+					<h3>Metrics:</h3>
 					</div>
 					<div class="col-2">
-						<div class="clearfix">
-    						<a class="btn btn-primary float-left" href="index.php?pagename=Article-Page&source=<?php print $_GET['source'] ?>&article-ref=<?php print $_GET['article-ref']?>&action=refresh_metrics">Refresh metrics</a>
-						</div>
+						<?php if (isset($_SESSION['username'])) { ?>
+							<div class="clearfix">
+	    						<a class="btn btn-primary float-left" href="index.php?pagename=Article-Page&source=<?php print $_GET['source'] ?>&article-ref=<?php print $_GET['article-ref']?>&action=refresh_metrics">Refresh metrics</a>
+							</div>
+						<?php }?>
 					</div>
 				</div>
 				<div class="row">
