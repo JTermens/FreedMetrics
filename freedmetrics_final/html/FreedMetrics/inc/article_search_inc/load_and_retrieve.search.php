@@ -9,10 +9,10 @@ if ($_GET['source'] == 'FreedMetrics Database') {
 
 	// if no actions are applied, then the article has a new visit
 	if(!array_key_exists('action', $_GET)){
-		$visits = $conn->query("SELECT visits FROM Article WHERE article_id='$article_id'");
+		$visits = $conn->query("SELECT visits FROM Article WHERE article_id=$article_id");
 		$visits = $visits->fetch_assoc();
 		$visits = intval($visits['visits'])+1;
-		$conn->query("UPDATE Article SET visits = '$visits' WHERE article_id='$article_id'");
+		$conn->query("UPDATE Article SET visits = $visits WHERE article_id=$article_id");
 	}
 
 	//article id
@@ -54,10 +54,10 @@ if ($_GET['source'] == 'FreedMetrics Database') {
 
 // update web statistics
 if(!array_key_exists('action', $_GET)){
-	$num_searches = $conn->query("SELECT num_searches FROM Web_Statistics WHERE idWeb_Statistics='1'");
+	$num_searches = $conn->query("SELECT num_searches FROM Web_Statistics WHERE idWeb_Statistics=1");
 	$num_searches = $num_searches->fetch_assoc();
 	$num_searches = intval($num_searches['num_searches'])+1;
-	$conn->query("UPDATE Web_Statistics SET num_searches = '$num_searches' WHERE idWeb_Statistics='1'");
+	$conn->query("UPDATE Web_Statistics SET num_searches = $num_searches WHERE idWeb_Statistics=1");
 }
 
 // if the search is done by a loged user, update its num_articles_searched
@@ -72,5 +72,5 @@ if (isset($_SESSION['username'])) {
 	$conn->query("UPDATE Persons SET num_articles_searched = '$num_articles_searched' WHERE email='$user_email'");
 
 	// add relation to persons_has_article if it isn't
-	$check = $conn -> query("INSERT IGNORE INTO Persons_has_Article (Article_article_id, Persons_person_id, is_user) VALUES ('$article_id','$person_id','1')" );
+	$check = $conn -> query("INSERT IGNORE INTO Persons_has_Article (Article_article_id, Persons_person_id, is_user) VALUES ($article_id,$person_id,1)" );
 }
