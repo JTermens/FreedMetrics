@@ -32,11 +32,11 @@ function retrive_metrics($article_data,$conn,$article_id){
 
 	// Upload to its corresponding article entry
 	$conn->query("UPDATE Article SET 
-		wikipedia_references = '$wikipedia_references', 
-		crossref_references = '$crossref_references',
-		pubmed_citations = '$pubmed_citations',
-		total_tweets = '$total_tweets',
-		original_tweets = '$original_tweets', WHERE article_id='$article_id'");
+		wikipedia_references = $wikipedia_references, 
+		crossref_references = $crossref_references,
+		pubmed_citations = $pubmed_citations,
+		total_tweets = $total_tweets,
+		original_tweets = $original_tweets WHERE article_id=$article_id");
 
 	$title = $article_data['title'];
 	//  TWEET UPLOAD  //
@@ -46,7 +46,7 @@ function retrive_metrics($article_data,$conn,$article_id){
       $tweet_id = $entry['tweet_id'];
 
       // check if the tweet is already in the database for the corresponding article, if not, it is added
-      $sql = "INSERT IGNORE INTO Tweet (tweet_id,Article_article_id) VALUES ('$tweet_id','$article_id')";     #estar atento a $article_id por si hay problemas
+      $sql = "INSERT IGNORE INTO Tweet (tweet_id,Article_article_id) VALUES ($tweet_id,$article_id)";     #estar atento a $article_id por si hay problemas
   	  $conn->query($sql);
   	}
 
