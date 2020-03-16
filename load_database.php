@@ -3,37 +3,31 @@
 require 'metrics.php';
 require 'twitter_metrics.php';
 
-$keywords = array('hola', 'adios', 'venga');
-$authors = array('oscar', 'joan', 'miguel');
-$article_dict = array('title' => "Hallmarks of Cancer",
-    'link' => 'web',
-    'doi' => '10.1016/j.cell.2011.02.013',
-    'journal' => 'joniIsmo',
-    'publish date' => 'date',
-    'abstract' => 'aquí habrá muchísimo texto',
-    'authors' => $authors,
-    'keywords' => $keywords,
-    'source' => 'pubmed',
-    'source_id' => '10647931');
-
-
 
 function load_database($article_dict) {
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "freedmetrics";
 
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-echo "Connected successfully";
+include_once("db_conn.php");
 
 
+#FIRST UPLOAD SOURCE AND JOURNAL TO KNOW THEIR FOREIGN KEYS AND INSERT THEM INTO ARTICLE TABLE
+
+
+  //////////// SOURCE UPLOAD  ////////////
+
+  $source = $article_dict['source'];
+  $sql = "INSERT IGNORE INTO source (source)
+  VALUES ('$source')";
+  $conn->query($sql);
+  $source_id = $conn->insert_id; //gets the last id inserted. Id of the journal
+
+
+  //////////// JOURNAL UPLOAD  ////////////
+
+  $journal = $article_dict['journal'];
+  $sql = "INSERT IGNORE INTO Journal (Name)
+  VALUES ('$journal')";
+  $conn->query($sql);
+  $journal_id = $conn->insert_id; //gets the last id inserted. Id of the journal
 
 
 
@@ -42,110 +36,38 @@ echo "Connected successfully";
 $source_id = $article_dict['source_id'];
 $title = $article_dict['title'];
 $abstract = $article_dict['abstract'];
-$article_date = $article_dict['publish date'];
+$article_date = $article_dict['publish_date'];
 $url = $article_dict['link'];
 $doi = $article_dict['doi'];
 
 ///  METRICS
 $wikipedia_references = wiki_search($title);
 $crossref_references = crossref_references($doi);
-$readcount_mendeley = readcount_mendeley($doi);
+#$readcount_mendeley = readcount_mendeley($doi);    #it does not work always
 $pubmed_citations = pubmed_citations($source_id);
 $total_tweets = total_tweets("\"$title\"");
 $original_tweets = original_tweets("\"$title\"");
 
 
-$sql = "INSERT IGNORE INTO Article (source_id, title, abstract, article_date, url, doi, wikipedia_references, crossref_references, readcount_mendeley, pubmed_citations, total_tweets, original_tweets)
-VALUES ('$source_id', '$title', '$abstract', '$article_date', '$url', '$doi', '$wikipedia_references', '$crossref_references', '$readcount_mendeley', '$pubmed_citations', '$total_tweets', '$original_tweets')";
-#$conn->query($sql);
-if (mysqli_query($conn, $sql)) {
-    echo "New record created successfully";
-} else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-}
+#SELECT SOURCE FOREIGN KEY FROM SOURCE TABLE
+$sql = "SELECT idsource FROM source WHERE source='$source'";
+$result = $conn->query($sql) or die($conn->error);
+$row = $result->fetch_assoc();
+$source_id = $row['idsource'];
+
+
+#SELECT JOURNAL FOREIGN KEY FROM JOURNAL TABLE
+$sql = "SELECT automatic_id_journal FROM Journal WHERE Name='$journal'";
+$result = $conn->query($sql) or die($conn->error);
+$row = $result->fetch_assoc();
+$journal_id = $row['automatic_id_journal'];
+
+
+#INSERT VALUES INTO ARTICLE TABLE
+$sql = "INSERT IGNORE INTO Article (source_id, title, abstract, article_date, url, doi, wikipedia_references, crossref_references, pubmed_citations, total_tweets, original_tweets, Journal_automatic_id_journal, source_idsource)
+VALUES ('$source_id', '$title', '$abstract', '$article_date', '$url', '$doi', '$wikipedia_references', '$crossref_references', '$pubmed_citations', '$total_tweets', '$original_tweets', '$journal_id', '$source_id')";
+$conn->query($sql);
 $article_id = $conn->insert_id; //gets the last id inserted. Id of the article
-
-
-
-
-//////////// JOURNAL UPLOAD  ////////////
-
-$journal = $article_dict['journal'];
-$sql = "INSERT IGNORE INTO Journal (Name)
-VALUES ('$journal')";
-#$conn->query($sql);
-if (mysqli_query($conn, $sql)) {
-    echo "New record created successfully";
-} else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-}
-$journal_id = $conn->insert_id; //gets the last id inserted. Id of the journal
-
-
-//////////// ARTICLE_HAS_JOURNAL UPLOAD  ////////////
-
-if ($journal_id) {
-  $sql = "INSERT INTO Article_has_Journal (Article_article_id, Journal_automatic_id_journal)
-  VALUES ('$article_id', '$journal_id')";
-}
-else {
-  $sql = "SELECT automatic_id_journal FROM Journal WHERE Name='$journal'";
-  $result = $conn->query($sql) or die($conn->error);
-  $row = $result->fetch_assoc();
-  $journal_id = $row['automatic_id_journal'];
-
-  $sql = "INSERT INTO Article_has_Journal (Article_article_id, Journal_automatic_id_journal)
-  VALUES ('$article_id', '$journal_id')";
-}
-
-#$conn->query($sql);
-if (mysqli_query($conn, $sql)) {
-    echo "New record created successfully";
-  } else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-  }
-
-
-
-
-  //////////// SOURCE UPLOAD  ////////////
-
-  $source = $article_dict['source'];
-  $sql = "INSERT IGNORE INTO source (source)
-  VALUES ('$source')";
-  #$conn->query($sql);
-  if (mysqli_query($conn, $sql)) {
-      echo "New record created successfully";
-  } else {
-      echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-  }
-  $source_id = $conn->insert_id; //gets the last id inserted. Id of the journal
-
-
-  //////////// ARTICLE_HAS_SOURCE UPLOAD  ////////////
-
-  if ($source_id) {
-    $sql = "INSERT INTO Article_has_source (Article_article_id, source_idsource)
-    VALUES ('$article_id', '$source_id')";
-  }
-  else {
-    $sql = "SELECT idsource FROM source WHERE source='$source'";
-    $result = $conn->query($sql) or die($conn->error);
-    $row = $result->fetch_assoc();
-    $source_id = $row['idsource'];
-
-    $sql = "INSERT INTO Article_has_source (Article_article_id, source_idsource)
-    VALUES ('$article_id', '$source_id')";
-  }
-
-  #$conn->query($sql);
-  if (mysqli_query($conn, $sql)) {
-      echo "New record created successfully";
-    } else {
-      echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-    }
-
-
 
 
 
@@ -155,12 +77,7 @@ if (mysqli_query($conn, $sql)) {
   foreach ($keywords as $keyword) {
     $sql = "INSERT IGNORE INTO Keywords (keyword)
     VALUES ('$keyword')";
-    #$conn->query($sql);
-    if (mysqli_query($conn, $sql)) {
-        echo "New record created successfully";
-    } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-    }
+    $conn->query($sql);
     $keyword_id = $conn->insert_id; //gets the last id inserted. Id of keywords
 
     /// ARTICLE_HAS_KEYWORDS ///
@@ -177,15 +94,8 @@ if (mysqli_query($conn, $sql)) {
       $sql = "INSERT INTO Article_has_Keywords (Article_article_id, Keywords_idKeywords)
       VALUES ('$article_id', '$keyword_id')";
       }
-      #$conn->query($sql);
-      if (mysqli_query($conn, $sql)) {
-          echo "New record created successfully";
-        } else {
-          echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-        }
+      $conn->query($sql);
   }
-
-
 
 
   //////////// AUTHORS AND ARTICLE_HAS_AUTHORS UPLOAD  ////////////
@@ -194,15 +104,10 @@ if (mysqli_query($conn, $sql)) {
   foreach ($authors as $author) {
     $sql = "INSERT IGNORE INTO Persons (name)
     VALUES ('$author')";
-    #$conn->query($sql);
-    if (mysqli_query($conn, $sql)) {
-        echo "New record created successfully";
-    } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-    }
+    $conn->query($sql);
     $author_id = $conn->insert_id; //gets the last id inserted. Id of keywords
 
-    /// ARTICLE_HAS_KEYWORDS ///
+    /// PERSONS_HAS_ARTICLE ///
     if ($author_id) {
       $sql = "INSERT INTO Persons_has_Article (Article_article_id, Persons_person_id, is_author)   #notice the is_author is set to TRUE
       VALUES ('$article_id', '$author_id', TRUE)";
@@ -216,14 +121,8 @@ if (mysqli_query($conn, $sql)) {
       $sql = "INSERT INTO Persons_has_Article (Article_article_id, Persons_person_id, is_author)   #notice the is_author is set to TRUE
       VALUES ('$article_id', '$author_id', TRUE)";
       }
-      #$conn->query($sql);
-      if (mysqli_query($conn, $sql)) {
-          echo "New record created successfully";
-        } else {
-          echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-        }
+      $conn->query($sql);
   }
-
 
 
 
@@ -245,23 +144,13 @@ if (mysqli_query($conn, $sql)) {
 
       $sql = "INSERT IGNORE INTO Tweet (date, text, author, followers, retweets, is_verified, Article_article_id)
       VALUES ('$date', '$text', '$author', '$followers', '$retweets', '$verified', '$article_id')";     #estar atento a $article_id por si hay problemas
-      #$conn->query($sql);
-      if (mysqli_query($conn, $sql)) {
-            echo "New record created successfully";
-        } else {
-            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-        }
+      $conn->query($sql);
   }
-
 
 
 mysqli_close($conn);
 }
 
-load_database($article_dict);
-
-
-
-
+#load_database($article_dict);
 
 ?>
