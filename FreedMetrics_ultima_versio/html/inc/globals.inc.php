@@ -34,7 +34,7 @@ $md_width = 10;
 include_once("$incDir/lib_FreedMetrics.inc.php");
 
 // Database conection
-include_once("../../freedmetrics_connect/db_connect.php");
+include_once("../freedmetrics_connect/db_connect.php");
 
 // Mailer functions
 require_once "$mailer_incDir/PHPMailer.php";
@@ -45,7 +45,7 @@ require_once "$mailer_incDir/Exception.php";
 // Instantiation and passing `true` enables exceptions
 $mail = new PHPMailer(true);
 // Settings
-include_once("../../freedmetrics_connect/mail_connect.php");
+include_once("../freedmetrics_connect/mail_connect.php");
 
 session_start();
 
