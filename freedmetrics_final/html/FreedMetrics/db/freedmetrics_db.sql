@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `freedmetrics`.`Persons` (
   `is_verified` TINYINT(1) NULL DEFAULT NULL,
   `email` VARCHAR(45) NULL DEFAULT NULL,
   `fpkey` VARCHAR(45) NULL,
+  `fpkey_expire` VARCHAR(45) NULL,
   `register_date` VARCHAR(45) NULL,
   FULLTEXT (name),
   PRIMARY KEY (`person_id`))
