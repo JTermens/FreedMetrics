@@ -1,7 +1,7 @@
 <?php
 
 #Global variables for the different functions:
-include_once("../../freedmetrics_connect/twitter_connect.php");
+include_once("../freedmetrics_connect/twitter_connect.php");
 
 /** URL for the type of request in the API. WE SPECIFY TO DO A SEARCH **/
 $url = 'https://api.twitter.com/1.1/search/tweets.json';
