@@ -195,14 +195,11 @@ $month_ref = array(
 	'December' => '12'
 );
 
-$arxiv_fields = array(
+$search_fields = array(
 	'Title' => 'ti',
 	'Author' => 'au',
 	'Abstract' => 'abs',
-	'Comment' => 'co',
-	'Journal Reference' => 'jr',
+	'Journal' => 'jr',
 	'Subject Category' => 'cat',
-	'Report Number' => 'rn',
 	'Id' => 'id',
-	'All' => 'all'
 );

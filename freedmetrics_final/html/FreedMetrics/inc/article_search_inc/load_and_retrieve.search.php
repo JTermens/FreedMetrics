@@ -5,7 +5,10 @@ include_once("$metrics_incDir/metrics_functions.metrics.php");
 
 $article_data = $_SESSION[$_GET['source']][$_GET['article-ref']];
 
-if ($_GET['source'] == 'FreedMetrics Database') {
+if ($_GET['source'] == 'FreedMetrics_Database') {
+
+	//article id
+	$article_id = $article_data['article_id'];
 
 	// if no actions are applied, then the article has a new visit
 	if(!array_key_exists('action', $_GET)){
@@ -15,16 +18,13 @@ if ($_GET['source'] == 'FreedMetrics Database') {
 		$conn->query("UPDATE Article SET visits = $visits WHERE article_id=$article_id");
 	}
 
-	//article id
-	$article_id = $article_data['article_id'];
-
 	// create metrics and tweets dictionaries
-	$metrics_dict = array('Visits on Freedmetrics' => $article_data['visits'],
+	$metrics_dict = array('Visits on Freedmetrics' => $article_data['visits']+1,
 						  'Wikipedia References' => $article_data['Wikipedia References'],
 						  'Crossref References' => $article_data['Crossref References'],
 						  'PubMed Citations' => $article_data['PubMed Citations'],
-						  'Total num. of tweets' => $article_data['Total number of tweets'],
-						  'Num. of original tweets' => $article_data['Number of original tweets'],
+						  'Total num. of tweets' => $article_data['Total num. of tweets'],
+						  'Num. of original tweets' => $article_data['Num. of original tweets'],
 						);
 	$tweets_dict = $article_data['tweets'];
 
@@ -49,7 +49,7 @@ if ($_GET['source'] == 'FreedMetrics Database') {
 
 	$metrics_dict = $metrics_raw[0];
 	$tweets_dict = $metrics_raw[1];
-	$metrics_dict['Visits on Freedmetrics'] = 1;
+	$metrics_dict =array('Visits on Freedmetrics' => 1)+$metrics_dict; // ensure it is the first one
 }
 
 // update web statistics

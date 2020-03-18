@@ -63,7 +63,7 @@ $pagename_ref = array(
 
 	'Advanced-Search' => array(
 		'route' => "$search_tplDir/advanced_search.php",
-		'style' => '',
+		'style' => 'full-image',
 	),
 
 	'Article-Page' => array(
@@ -110,4 +110,10 @@ if (isset($_SESSION['username'])) {
 	$pagename_ref['Not-Found']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
 }
 
-$source_ref = array('FreedMetrics Database','PubMed','arXiv');
+$max_results = 200;
+
+$source_ref = array('FreedMetrics_Database','PubMed','arXiv');
+
+$search_fields = array('all','title','author','abstract','journal','keyword','source_id','doi');
+
+$connectors = array('AND','OR','NOT');
