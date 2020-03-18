@@ -33,9 +33,13 @@ print(page_head($_SESSION['pagename'],$title));
             </div>
 
             <button type="submit" name="submit_button" class="btn btn-primary" style="float:left;">Log In</button>
-            <p id="not_registered" style="float:right;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_registered'){echo 'block;';}else{echo 'none;';} ?>">You are not registered!</p>
-            <p id="not_activated" style="float:right;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_activated'){echo 'block;';}else{echo 'none;';} ?>">Your account is not activated!</p><br><br>
-            <a href="index.php?pagename=ForgotPassword" style="float:left;">Forgot your password?</a>
+
+            <a href="index.php?pagename=ForgotPassword" style="float:right;">Forgot your password?</a>
+            <br><br>
+            <?php if (isset($_GET['error']) && $_GET['error'] == 'not_registered'){echo "<p id='not_registered' style='float:left;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:block;'>You are not registered!</p>";} ?>
+            <?php if (isset($_GET['error']) && $_GET['error'] == 'not_activated'){echo "<p id='not_activated' style='float:left;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:block;'>Your account is not activated!</p>";} ?>
+            <?php if (isset($_GET['error']) && $_GET['error'] == 'wrong_password'){echo "<p id='wrong_password' style='float:left;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:block;'>Wrong password!</p>";} ?>
+
           </form>
         </div>
         <div class="col-lg-6">
