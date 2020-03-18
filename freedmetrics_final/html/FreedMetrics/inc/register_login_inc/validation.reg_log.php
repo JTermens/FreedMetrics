@@ -25,8 +25,7 @@ if(mysqli_num_rows($query) == 1){
     $_SESSION['email'] = $email;
 
     // update last connection
-    $today_date = date("d").'/'.date("m").'/'.date("Y");
-    $conn->query("UPDATE Persons SET last_connection = '$today_date' WHERE email='$email'");
+    $conn->query("UPDATE Persons SET last_connection = NOW() WHERE email='$email'");
     header('location:index.php?pagename=User-Page');
   }else{
     header("location:index.php?pagename=Login&error=not_activated");

@@ -52,7 +52,7 @@ session_start();
 // Reference to each page of the website
 $pagename_ref = array(
 	'Home' => array(
-		'route' => "$contentDir/home.php", 
+		'route' => "$contentDir/home.php",
 		'style' => '',
 	),
 
@@ -63,7 +63,7 @@ $pagename_ref = array(
 
 	'Advanced-Search' => array(
 		'route' => "$search_tplDir/advanced_search.php",
-		'style' => 'full-image',
+		'style' => '',
 	),
 
 	'Article-Page' => array(
@@ -78,6 +78,16 @@ $pagename_ref = array(
 
 	'Login' => array(
 		'route' => "$personal_tplDir/login.php",
+		'style' => 'full-image',
+	),
+
+	'ForgotPassword' => array(
+		'route' => "$personal_tplDir/forgot_password.php",
+		'style' => 'full-image',
+	),
+
+	'PasswordChange' => array(
+		'route' => "$reglog_incDir/change_password.reg_log.php",
 		'style' => 'full-image',
 	),
 
@@ -107,12 +117,14 @@ if (isset($_SESSION['username'])) {
 	$pagename_ref['Article-Page']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
 	$pagename_ref['User-Page']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
 	$pagename_ref['Login']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
+	$pagename_ref['ForgotPassword']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
+	$pagename_ref['PasswordChange']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
 	$pagename_ref['Not-Found']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
 }
 
 $max_results = 200;
 
-$source_ref = array('FreedMetrics_Database','PubMed','arXiv');
+$source_ref = array('FreedMetrics Database','PubMed','arXiv');
 
 $search_fields = array('all','title','author','abstract','journal','keyword','source_id','doi');
 
