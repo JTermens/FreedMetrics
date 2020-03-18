@@ -15,6 +15,20 @@ print(page_header($header, $subheader,1));
 
 <div class="container">
 	<div class="col-lg- <?php print $lg_width;?> col-md-<?php print $lg_width;?> mx-auto">
+		<div class="row">
+			<?php
+					$query_string = "";
+					foreach ($user_query as $condition) {
+						if (count($condition) == 3){
+							$query_string .= " ".$condition['connector']." ".$condition['search_input']." [".$condition['field']."]";
+						}else{
+							$query_string .= $condition['search_input']." [".$condition['field']."]";
+						}
+					}
+				?>
+			<h5><b>Input Query:</b>&nbsp<?php print $query_string ?></h5>
+		</div>
+		<br>
 		<?php foreach ($source_ref as $tag) {?>
 		<div class="row">
 			<?php
@@ -33,8 +47,18 @@ print(page_header($header, $subheader,1));
 		</div>
 		<div class="row"><p><br><br></p></div>
 		<?php }?>
+
 		<div class="row">
-			<p class="text-muted">Didn't find what you were looking for? &nbsp
+	    	<div class="clearfix">
+    			<a class="btn btn-primary float-left" href="index.php?pagename=Search-Results&action=next">Next <?php print($max_results) ?> articles</a>
+			</div>
+		</div>
+		<br>
+		<div class="row" style="justify-content: center;">
+			<p class="text-muted">Didn't find what you were looking for?</p>
+		</div>
+		<div class="row" style="justify-content: center;">
+			<p>
 			<?php if (isset($_SESSION['username'])) {
 				print "Refine your search trying the <a href=\"index.php?pagename=Advanced-Search\" style=\"font-weight: bold;\">Advanced Search</a> tool.";
 			}else{
@@ -42,7 +66,7 @@ print(page_header($header, $subheader,1));
 			}
 			?> 
 			</p>
-		</div>
+		</div>	
 	</div>
 </div>
 
