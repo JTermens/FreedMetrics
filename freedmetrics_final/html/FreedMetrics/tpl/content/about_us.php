@@ -90,6 +90,7 @@ print(page_header($header, $subheader,1));
 			 	 		</div>
 					 </div>
          </div>
+				</div>
 			 </div>
 
 
