@@ -15,7 +15,7 @@ print(page_head($_SESSION['pagename'],$title));
 		<div class="card border-0 shadow my-5 col-lg-8 col-md-10 mx-auto">
 			<div class="card-body p-5">
 				<div class="row">
-					<h2><?php print $article_data['title']?></h2><br>
+					<h2><?php print $article_data['title']?></h2>
 					<div style= "font-style: italic;">
 						<?php
 							$authors = '';

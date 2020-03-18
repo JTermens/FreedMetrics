@@ -19,13 +19,13 @@
   --color2: #000000;
 
   --color3: #238b45;
-  --color3_rgb:rgba(35, 139, 69, 0.85);
+  --color3_rgb:rgba(35, 139, 69, 0.9);
 
   --colorfons: #0c4474;
   --colorfons_rgb:rgba(12,68,116,0.8);
 
 
-/* Red - Blue color set (style 8) 
+/* Red - Blue color set (style 8)
   --color1: #4aa9f7;
   --color1_rgb: rgba(74,169,247, 0.5);
 
@@ -80,7 +80,7 @@
 
 body {
   margin: 0;
-  font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";;
   font-size: 1rem;
   font-weight: 400;h2,
   line-height: 1.5;
@@ -133,23 +133,9 @@ h1, h2, h3, h4, h5, h6,
 }
 
 footer {
-  text-align: center;
-  padding: 30px 0 45px;
+  padding: 50px 0 65px;
   flex-shrink: none;
   background: white;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 9rem;            /* Footer height */
-}
-
-#page-container {
-  position: relative;
-  min-height: 100vh;
-}
-
-#content-wrap {
-  padding-bottom: 9rem;    /* Footer height */
 }
 
 footer .list-inline {
@@ -190,6 +176,11 @@ footer .copyright {
   }
 }
 
+.btn:disabled{
+  color: #fff;
+  background-color: var(--color1);
+  border-color: var(--color1);
+}
 .btn:hover {
   color: #212529;
   text-decoration: none;
@@ -4294,7 +4285,7 @@ header.masthead_page .page-heading .subheading{
   text-transform: uppercase;
   border-radius: 0;
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  float: right; 
+  float: right;
   color: var(--color3);
 
 }
@@ -4384,58 +4375,4 @@ span.doi-label:hover{
 
 .form-control{
   background-color: transparent !important;
-}
-
-.adv_input{
-  height: 23px;
-  border: 0;
-  outline: 0;
-  background: none;
-  width: 200px;
-  color: black;
-}
-
-.adv_input_box{
-  height: 23px;
-  border: 1px solid var(--color3);
-  background-color: transparent;
-  border-radius: 5px;
-}
-
-.adv_select{
-  width: 100%;
-  height: 23px;
-  border: 1px solid var(--color3); 
-  background-color: transparent;
-  border-radius: 5px;
-  text-align: center;
-  color: var(--color3);
-  -webkit-appearance: none;
-}
-
-.adv_select:hover{
-  background-color: var(--color1);
-  color: white;
-  border-color: var(--color1);
-}
-
-.circ-btn{
-  height: 23px;
-  width: 23px;
-  border: 0; 
-  background-color: var(--color3);
-  border-radius: 11.5px;
-  margin-top: 0;
-  position: absolute;
-  margin-left: 20px;
-  color: white;
-  font-weight: bolder;
-  font-size: 16px;
-}
-
-.adv_select :hover{
-  background-color: var(--color1);
-  color: white;
-  font-weight: bold;
-  border-color: var(--color1);
 }

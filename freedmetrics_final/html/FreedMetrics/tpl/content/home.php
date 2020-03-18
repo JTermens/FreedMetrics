@@ -45,14 +45,11 @@ $num_searches =$statistics['num_searches'];
           <?php if (!isset($_SESSION['username'])) {
             print "Give it a try and <a href=\"index.php?pagename=Login\" style=\"color: white; font-weight: bold;\">Register</a> for more tools.</p>";
             }?>
-          <form action="index.php?pagename=Search-Results&action=new" id="search_query" name="search_query" method="POST" enctype="multipart/form-data">
+          <form action="index.php?pagename=Search-Results" id="search_query" name="search_query" method="POST" enctype="multipart/form-data">
             <div class="d-flex justify-content-center h-100">
               <div class="searchbar">
-                <div class="form-group">
-                  <input class="search_input" type="text" name="search_input1" placeholder="Enter the article's title, or doi, or author, or ...">
-                  <input type="hidden" name="field1" value="all">
-                  <button type="submit" class="search_icon"><i class="fas fa-search"></i></button>
-                </div>
+                <input class="search_input" type="text" name="search_query" placeholder="Enter the article's title, or doi, or author, or ...">
+                <button type="submit" class="search_icon"><i class="fas fa-search"></i></button>
               </div>
             </div>
           </form>
@@ -73,7 +70,7 @@ $num_searches =$statistics['num_searches'];
       <h4 class="text-center mt-0"><b><?php print $num_searches ?></b> searches done.</h4>      
     </div>
   </section>
-  <section class="page-section bg-primary text-white" id="Twitter">
+  <section class="page-section bg-dark text-white" id="Twitter">
     <div class="container text-center">
       <h3 class="mb-4">Take a look at our twitter page</h3>
       <a class="twitter-timeline" href="https://twitter.com/FreedMetrics?ref_src=twsrc%5Etfw">Tweets by FreedMetrics</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -83,29 +80,6 @@ $num_searches =$statistics['num_searches'];
       </div>
     </div>
   </section>
-  <section class="page-section bg-dark" id="about">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8 text-center">
-        <h2 class="text-white mt-0">About us</h2>
-        <hr class="divider light my-4">
-        <p class="text-white-50 mb-4">FreedMetrics is a web service created by a multidisciplinary group of 4 students from the University Pompeu Fabra (UPF) of Barcelona coursing the MSc in Bioinformatics for Health Sciences.
-        <p class="text-white-50 mb-4">We believe that the impact of scientific articles is a valuable information for any student and researcher. Our philosophy is that access to information should be free and easy for everyone.
-          <div class="clearfix">
-               <a class="btn btn-primary" href="link_to_authors_page">Meet our team</a>
-          </div>
-          <br>
-          <br>
-      </div>
-    </div>
-    <div class="row justify-content-center">
-      <div class="col-lg-8 text-center">
-        <h2 class="text-white mt-0">Institutions</h2>
-            <img src="tpl/img/upf_logo.png" alt="upf logo" width="40%">
-      </div>
-    </div>
-  </div>
-</section>
 
   <!-- Portfolio Section 
   <section id="portfolio">
