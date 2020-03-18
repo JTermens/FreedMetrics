@@ -12,14 +12,15 @@ $vkey = md5(time().$name);
 $password = md5($password);
 
 // today's date
+$today_date = date("d").'/'.date("m").'/'.date("Y");
 
 $check = "SELECT * FROM Persons WHERE email='".$email."'";
 $query = mysqli_query($conn, $check);
 if(mysqli_num_rows($query)>0){
   header("location:index.php?pagename=Login&error=already_registered");
 }else{
-  $sql = "INSERT INTO Persons (email, name, password, register_date, vkey, is_verified, num_articles_searched, last_connection)
-  VALUES ('$email', '$name', '$password', NOW(), '$vkey', '0', '0', NOW())";
+  $sql = "INSERT INTO Persons (email, name, password, vkey, is_verified, num_articles_searched, last_connection)
+  VALUES ('$email', '$name', '$password', '$vkey', '0', '0', '$today_date')";
   if (mysqli_query($conn, $sql)) {
 
     try {
@@ -27,7 +28,7 @@ if(mysqli_num_rows($query)>0){
         $mail_subject = 'Freed Metrics: Please, verify your email and complete your registration.';
         $mail_body = "<p>Welcome, $name, to Freed Metrics! Please, click on the link below in order to confirm your email and become
         one of our proud users! Again, thank you for using our service.<p> <br>
-        <a href='localhost/freedmetrics_final/html/FreedMetrics/index.php?pagename=Reg-complete&email=$email&vkey=$vkey'>Confirm your email and activate your account!<a>";
+        <a href='localhost/FreedMetrics/index.php?pagename=Reg-complete&email=$email&vkey=$vkey'>Confirm your email and activate your account!<a>";
 
         send_email($mail,$email,$name,$mail_subject,$mail_body);
 

@@ -3,7 +3,17 @@
 
 function load_article_database($article_dict,$conn) {
 
-#FIRST UPLOAD SOURCE AND JOURNAL TO KNOW THEIR FOREIGN KEYS AND INSERT THEM INTO ARTICLE TABLE
+#First check that an article is not already in the database
+
+  $check = $conn->query("SELECT article_id FROM Article WHERE source_id=".$article_dict['source_id']);
+
+  if($check->num_rows >0){
+    $article_id = $check->fetch_assoc();
+    $article_id = $article_id['article_id'];
+    return $article_id;
+  }
+
+#SECOND UPLOAD SOURCE AND JOURNAL TO KNOW THEIR FOREIGN KEYS AND INSERT THEM INTO ARTICLE TABLE
 
     //////////// SOURCE UPLOAD  ////////////
     $source = $article_dict['source'];
@@ -45,7 +55,7 @@ function load_article_database($article_dict,$conn) {
   $doi = $article_dict['doi'];
 
   $sql = "INSERT IGNORE INTO Article (source_id, title, abstract, article_date, url, doi, visits, source_idsource, Journal_automatic_id_journal)
-  VALUES ('$source_id', '$title', '$abstract', '$article_date', '$url', '$doi','1', '$id_source', '$id_journal')";
+  VALUES ('$source_id', '$title', '$abstract', '$article_date', '$url', '$doi','0', '$id_source', '$id_journal')";
   $conn->query($sql);
   $article_id = $conn->insert_id; //gets the last id inserted. Id of the article
 
@@ -78,29 +88,28 @@ function load_article_database($article_dict,$conn) {
   }
 
 
+
   //////////// AUTHORS AND ARTICLE_HAS_AUTHORS UPLOAD  ////////////
   /// AUTHORS ///
   $authors = $article_dict['authors'];
   foreach ($authors as $author) {
-    $sql = "INSERT IGNORE INTO Persons (name) VALUES ('$author')";
-    $conn->query($sql);
-    $author_id = $conn->insert_id; //gets the last id inserted. Id of person
-    /// ARTICLE_HAS_AUTHOR ///
-    if ($author_id) {
-      $sql = "INSERT INTO Persons_has_Article (Article_article_id, Persons_person_id, is_author)   #notice the is_author is set to TRUE
-      VALUES ('$article_id', '$author_id', 1)";
-      }
-    else {
-      $sql = "SELECT person_id FROM Persons WHERE name='$author'";
-      $result = $conn->query($sql) or die($conn->error);
-      $row = $result->fetch_assoc();
-      $author_id = $row['person_id'];
-
-      $sql = "INSERT INTO Persons_has_Article (Article_article_id, Persons_person_id, is_author)   #notice the is_author is set to TRUE
-      VALUES ('$article_id', '$author_id', 1)";
-      }
+    $sql = "SELECT * FROM Persons WHERE name = '$author'";
+    $result = $conn->query($sql) or die($conn->error);
+    if (!mysqli_num_rows($result)) {
+      $sql = "INSERT IGNORE INTO Persons (name) VALUES ('$author')";
       $conn->query($sql);
+    }
+    /// ARTICLE_HAS_AUTHOR ///
+    $sql = "SELECT person_id FROM Persons WHERE name='$author'";
+    $result = $conn->query($sql) or die($conn->error);
+    $row = $result->fetch_assoc();
+    $author_id = $row['person_id'];
+
+    $sql = "INSERT INTO Persons_has_Article (Article_article_id, Persons_person_id, is_author)   #notice the is_author is set to TRUE
+    VALUES ('$article_id', '$author_id', 1)";
+    $conn->query($sql);
   }
+
 
   return $article_id;
 }
@@ -118,10 +127,10 @@ function refresh_arxiv_doi($article_id, $conn){
   $feed = file_get_contents($base_url.$query); # get xml from the api
 
   preg_match('/<arxiv:doi xmlns:arxiv="http:\/\/arxiv.org\/schemas\/atom">(.+?)<\/arxiv:doi>/is', $entry, $doi); # doi, if any
-
+  
   if(!empty($doi)){
     // Upload to its corresponding article entry
     $doi = $doi[1];
-    $conn->query("UPDATE Article SET 'doi' = '$doi' WHERE article_id='".$article_id."'");
+    $conn->query("UPDATE Article SET doi = '$doi' WHERE article_id=$article_id");
   }
 }

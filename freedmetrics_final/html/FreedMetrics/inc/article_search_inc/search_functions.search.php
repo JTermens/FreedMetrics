@@ -8,12 +8,12 @@ function user_history($user_id,$conn){
 
 	$id_dict = array();
 
-	$query = "SELECT Article_article_id FROM Persons_has_Article WHERE Persons_person_id =$user_id AND is_user=1";
+	$query = "SELECT DISTINCT article_id,visits FROM Article t1 INNER JOIN Persons_has_Article t2 ON t1.article_id = t2.Article_article_id WHERE t2.Persons_person_id=$user_id AND t2.is_user=1 ORDER BY t1.visits DESC";
 	$result = $conn->query($query);
 	
 	if($result->num_rows > 0){
 		while($row = mysqli_fetch_assoc($result)){
-			array_push($id_dict, $row['Article_article_id']);
+			array_push($id_dict, $row['article_id']);
 		}
 	}
 
@@ -22,7 +22,59 @@ function user_history($user_id,$conn){
 	if (!(count($id_dict) == 0)){
 		foreach ($id_dict as $id) {
 			$entry_count += 1;
-			$entry = get_article_data($id,$conn);
+			$entry = get_article_preview($id,$conn);
+			$entries["entry$entry_count"] = $entry;
+		}
+	}
+
+	return $entries;
+}
+
+function most_visited($max_number,$conn){
+
+	$id_dict = array();
+
+	$query = "SELECT article_id FROM Article ORDER BY visits DESC LIMIT $max_number;";
+	$result = $conn->query($query);
+	
+	if($result->num_rows > 0){
+		while($row = mysqli_fetch_assoc($result)){
+			array_push($id_dict, $row['article_id']);
+		}
+	}
+
+	$entry_count = 0;
+	$entries = array();
+	if (!(count($id_dict) == 0)){
+		foreach ($id_dict as $id) {
+			$entry_count += 1;
+			$entry = get_article_preview($id,$conn);
+			$entries["entry$entry_count"] = $entry;
+		}
+	}
+
+	return $entries;
+}
+
+function most_recent($max_number,$conn){
+
+	$id_dict = array();
+
+	$query = "SELECT article_id FROM Article ORDER BY article_id DESC LIMIT $max_number;";
+	$result = $conn->query($query);
+	
+	if($result->num_rows > 0){
+		while($row = mysqli_fetch_assoc($result)){
+			array_push($id_dict, $row['article_id']);
+		}
+	}
+
+	$entry_count = 0;
+	$entries = array();
+	if (!(count($id_dict) == 0)){
+		foreach ($id_dict as $id) {
+			$entry_count += 1;
+			$entry = get_article_preview($id,$conn);
 			$entries["entry$entry_count"] = $entry;
 		}
 	}
@@ -69,7 +121,7 @@ function database_search($user_query,$conn){
 	if (!(count($id_dict) == 0)){
 		foreach ($id_dict as $id) {
 			$entry_count += 1;
-			$entry = get_article_data($id,$conn);
+			$entry = get_article_preview($id,$conn);
 			$entries["entry$entry_count"] = $entry;
 		}
 	}

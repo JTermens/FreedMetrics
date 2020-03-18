@@ -135,6 +135,56 @@ function get_article_data($article_id,$conn) {
 	return $article_data;
 }
 
+function get_article_preview($article_id,$conn) {
+
+	#GET DATA FROM THE TABLE ARTICLES
+
+	$sql = "SELECT title, abstract, doi, visits FROM Article WHERE article_id='$article_id'";
+	$result = $conn->query($sql) or die($conn->error);
+	$row = $result->fetch_assoc();
+
+	$title = $row['title'];
+	$abstract = $row['abstract'];
+	$doi = $row['doi'];
+	$visits = $row['visits'];
+
+
+	////// GETTING ID_AUTHORS AND AUTHORS  //////
+	#GET ID_AUTHOR(PERSON_ID) FROM THE TABLE PERSONS_HAS_ARTICLE
+	$sql = "SELECT Persons_person_id FROM Persons_has_Article WHERE Article_article_id=$article_id AND is_author=1";
+	$result = $conn->query($sql);
+	$data = array();
+	$id_authors = array();
+	if ($result->num_rows > 0) {
+	  while ($row = mysqli_fetch_assoc($result)){
+	    $data[] = $row;
+	  }
+	}
+	foreach ($data as $item){
+	  $id_authors[] = $item['Persons_person_id'];
+	}
+
+
+	#GET AUTHORS FROM THE TABLE AUTHORS
+	$authors = array();
+	foreach ($id_authors as $id_author) {
+	  $sql = "SELECT name FROM Persons WHERE person_id='$id_author'";
+	  $result = $conn->query($sql) or die($conn->error);
+	  $row = $result->fetch_assoc();
+	  $authors[] = $row['name'];
+	}
+
+
+	$article_preview = array('article_id' => $article_id,
+	                      'title' => $title,
+	                      'doi' => $doi,
+	                      'abstract' => $abstract,
+	                      'authors' => $authors,
+	                  	  'visits' => $visits);
+
+	return $article_preview;
+}
+
 
 
 
