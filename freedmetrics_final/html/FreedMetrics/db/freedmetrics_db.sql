@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS `freedmetrics`.`Persons` (
   `email` VARCHAR(45) NULL DEFAULT NULL,
   `fpkey` VARCHAR(45) NULL,
   `register_date` VARCHAR(45) NULL,
-  PRIMARY KEY (`person_id`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+  FULLTEXT (name),
+  PRIMARY KEY (`person_id`))
 ENGINE = InnoDB;
 
 
@@ -46,7 +46,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `freedmetrics`.`Journal` (
   `automatic_id_journal` INT NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR(45) NULL DEFAULT NULL,
+  `Name` VARCHAR(255) NULL DEFAULT NULL,
+  FULLTEXT (Name),
   PRIMARY KEY (`automatic_id_journal`),
   UNIQUE INDEX `Name_UNIQUE` (`Name` ASC))
 ENGINE = InnoDB;
@@ -95,6 +96,10 @@ CREATE TABLE IF NOT EXISTS `freedmetrics`.`Article` (
   `source_idsource` INT NOT NULL,
   `Journal_automatic_id_journal` INT NOT NULL,
   PRIMARY KEY (`article_id`, `source_idsource`, `Journal_automatic_id_journal`),
+  FULLTEXT (title),
+  FULLTEXT (abstract),
+  FULLTEXT (doi),
+  FULLTEXT (source_id),
   INDEX `fk_Article_source1_idx` (`source_idsource` ASC),
   INDEX `fk_Article_Journal1_idx` (`Journal_automatic_id_journal` ASC),
   CONSTRAINT `fk_Article_source1`
@@ -154,8 +159,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `freedmetrics`.`Keywords` (
   `idKeywords` INT NOT NULL AUTO_INCREMENT,
-  `keyword` VARCHAR(45) NULL DEFAULT NULL,
+  `keyword` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`idKeywords`),
+  FULLTEXT (keyword),
   UNIQUE INDEX `keyword_UNIQUE` (`keyword` ASC))
 ENGINE = InnoDB;
 
