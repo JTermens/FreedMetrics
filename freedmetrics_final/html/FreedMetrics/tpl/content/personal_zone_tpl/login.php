@@ -14,6 +14,7 @@ $title = "FreedMetrics - Login & Register";
 
 print(page_head($_SESSION['pagename'],$title));
 ?>
+
 <div class="container">
   <div class="card border-0 shadow my-5 col-lg-8 col-md-10 mx-auto">
     <div class="card-body p-5">
@@ -32,10 +33,9 @@ print(page_head($_SESSION['pagename'],$title));
               <input type="password" name="password" class="form-control required">
             </div>
 
-            <button type="submit" name="submit_button" class="btn btn-primary" style="float:left;">Log In</button>
+            <button type="submit" name="submit_button" class="btn btn-primary">Log In</button>
             <p id="not_registered" style="float:right;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_registered'){echo 'block;';}else{echo 'none;';} ?>">You are not registered!</p>
-            <p id="not_activated" style="float:right;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_activated'){echo 'block;';}else{echo 'none;';} ?>">Your account is not activated!</p><br><br>
-            <a href="index.php?pagename=ForgotPassword" style="float:left;">Forgot your password?</a>
+            <p id="not_activated" style="float:right;font-size:15px;color:red;margin-left:5px;margin-top:10px;display:<?php if (isset($_GET['error']) && $_GET['error'] == 'not_activated'){echo 'block;';}else{echo 'none;';} ?>">Your account is not activated!</p>
           </form>
         </div>
         <div class="col-lg-6">
@@ -56,7 +56,7 @@ print(page_head($_SESSION['pagename'],$title));
               <i class="fas fa-check" style="float:right;color:limegreen;" id="n_check"></i>
               <input type="text" name="name" class="form-control required" id="reg_name" onkeyup="warnings();" onclick="warnings()" placeholder="Write your full name!">
             </div>
-
+                
             <div class="form-group">
               <label>Password</label>
               <p id="wrong_pass" style="float:right;font-size:12px;color:red;margin:2px;">Password has to be at least 8 characters and contain a
@@ -73,7 +73,7 @@ print(page_head($_SESSION['pagename'],$title));
               <input type="password" name="password" class="form-control required" id="rep_pass" maxlength="20" onkeyup="warnings()" onclick="warnings()">
             </div>
 
-            <button type="submit" name="submit_button" class="btn btn-primary" id="reg_submit">Register</button>
+            <button type="submit" name="submit_button" class="btn btn-primary">Register</button>
           </form>
         </div>
       </div>
@@ -97,9 +97,15 @@ print(page_head($_SESSION['pagename'],$title));
     <!-- IMPORTING ICONS -->
     <script src="https://kit.fontawesome.com/45a8aedb40.js" crossorigin="anonymous"></script>
 
+    <style media="screen">
+      .tooltip:hover{opacity:1!important;}
+    </style>
+
     <script type="text/javascript">
-      $("#reg_name").autocomplete({
-        source: 'inc/register_login_inc/NameSearch.reg_log.php'
+      $(document).ready(function(){
+        $("#reg_name").autocomplete({
+          source:'inc/register_login_inc/NameSearch.reg_log.php'
+        });
       });
     </script>
 

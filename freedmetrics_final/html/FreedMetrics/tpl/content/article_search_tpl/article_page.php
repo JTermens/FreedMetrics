@@ -15,7 +15,7 @@ print(page_head($_SESSION['pagename'],$title));
 		<div class="card border-0 shadow my-5 col-lg-8 col-md-10 mx-auto">
 			<div class="card-body p-5">
 				<div class="row">
-					<h2><?php print $article_data['title']?></h2>
+					<h2><?php print $article_data['title']?></h2><br>
 					<div style= "font-style: italic;">
 						<?php
 							$authors = '';
@@ -81,7 +81,7 @@ print(page_head($_SESSION['pagename'],$title));
 					<div class="col-2">
 						<?php if (isset($_SESSION['username'])) { ?>
 							<div class="clearfix">
-	    						<a class="btn btn-primary float-left" href="index.php?pagename=Article-Page&source=<?php print $_GET['source'] ?>&article-ref=<?php print $_GET['article-ref']?>&action=refresh_metrics">Refresh metrics</a>
+	    						<a class="btn btn-primary float-left" href="index.php?pagename=Article-Page&id=<?php print $article_data['article_id'] ?>&action=refresh_metrics">Refresh metrics</a>
 							</div>
 						<?php }?>
 					</div>
