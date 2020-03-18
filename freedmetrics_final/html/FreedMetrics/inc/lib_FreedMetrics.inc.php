@@ -6,10 +6,12 @@ function page_head($pagename,$title){
   global $pagename_ref;
 
   $navbar_ref = array(
-  'search_bar' => "<form action=\"index.php?pagename=Search-Results\" id=\"search_query\" name=\"search_query\" method=\"POST\" enctype=\"multipart/form-data\">
+  'search_bar' => "<form action=\"index.php?pagename=Search-Results&action=new\" id=\"search_query\" name=\"search_query\" method=\"POST\" enctype=\"multipart/form-data\">
             <div class=\"d-flex justify-content-center h-100\">
               <li class=\"nav-item\">
-                <input class=\"nav-link js-scroll-trigger nav-search\" type=\"text\" name=\"search_query\" placeholder=\"Search article\">
+                <input class=\"nav-link js-scroll-trigger nav-search\" type=\"text\" name=\"search_input1\" placeholder=\"Search article\">
+                <input type=\"hidden\" name=\"field1\" value=\"all\">
+                <input type=\"hidden\" name=\"num_conditions\" value=\"1\">
               </li>
               <li class=\"nav-item\">
                 <button type=\"submit\" class=\"nav-link js-scroll-trigger\" style=\"background: transparent; border: 0px;\"><i class=\"fas fa-search\"></i></button>
@@ -63,7 +65,7 @@ function page_head($pagename,$title){
     </head>
     <body";
 
-    if (($pagename == 'Login') or ($pagename == 'Article-Page') or ($pagename == 'Advanced-Search') or ($pagename == 'ForgotPassword') or ($pagename == 'PasswordChange')){
+    if (($pagename == 'Login') or ($pagename == 'Article-Page') or ($pagename == 'Advanced-Search') or ($pagename == 'ForgotPassword') or ($pagename == 'PasswordChange')  or ($pagename == 'About-us')){
       $header .= " class=\"full-image\"";
     }
 
@@ -158,15 +160,12 @@ function page_footer($pagename){
       </div>
     </div>
   </footer>
-
   <!-- Bootstrap core JavaScript  -->
   <script src=\"tpl/vendor/jquery/jquery.min.js\"></script>
   <script src=\"tpl/vendor/bootstrap/js/bootstrap.bundle.min.js\"></script>
-
   <!-- MathJax -->
   <script src=\"https://polyfill.io/v3/polyfill.min.js?features=es6\"></script>
   <script id=\"MathJax-script\" async src=\"https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js\"></script>
-
   <!-- Custom scripts for this template -->
   <script src=\"tpl/js/creative.js\"></script>";
 
@@ -256,7 +255,6 @@ function results_table($entries,$tag){
 
     $table .="</div>
               <a class=\"btn expand\" type=\"button\" data-toggle=\"collapse\" data-target=\"#abstract$article_counter\" aria-expanded=\"false\" aria-controls=\"abstract$article_counter\" style=\"color: var(--color3)\">Abstract</a>
-
               <div class=\"collapse\" id=\"abstract$article_counter\">
                 <div class=\"card card-body text-justify\">
                   <p>";
@@ -281,12 +279,9 @@ function embedd_tweet($count,$tweet_id){
   print "<div id=\"tweet$count\" tweetID=\"$tweet_id\"></div>";
 
   print"<script>
-
           window.onload = (function(){
-
             var tweet = document.getElementById(\"tweet$count\");
             var id = tweet.getAttribute(\"tweetID\");
-
             twttr.widgets.createTweet(
               id, tweet,
               {
