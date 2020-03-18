@@ -56,6 +56,11 @@ $pagename_ref = array(
 		'style' => '',
 	),
 
+	'About-us' => array(
+		'route' => "$contentDir/about_us.php",
+		'style' => 'full-image',
+	),
+
 	'Search-Results' => array(
 		'route' => "$search_tplDir/search_results.php",
 		'style' => '',
@@ -105,6 +110,7 @@ $pagename_ref = array(
 
 if (isset($_SESSION['username'])) {
 	$pagename_ref['Home']['navbar_tags'] = array('Advanced Search','Personal Zone','LOGOUT');
+	$pagename_ref['About-us']['navbar_tags'] = array('search_bar','Advanced Search','Personal Zone','LOGOUT');
 	$pagename_ref['Search-Results']['navbar_tags'] = array('search_bar','Advanced Search','Personal Zone','LOGOUT');
 	$pagename_ref['Advanced-Search']['navbar_tags'] = array('search_bar','Advanced Search','Personal Zone','LOGOUT');
 	$pagename_ref['Article-Page']['navbar_tags'] = array('search_bar','Advanced Search','Personal Zone','LOGOUT');
@@ -112,6 +118,7 @@ if (isset($_SESSION['username'])) {
 	$pagename_ref['Not-Found']['navbar_tags'] = array('search_bar','Advanced Search','Personal Zone','LOGOUT');;
 }else{
 	$pagename_ref['Home']['navbar_tags'] = array('LOGIN & REGISTER');
+	$pagename_ref['About-us']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
 	$pagename_ref['Search-Results']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
 	$pagename_ref['Advanced-Search']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
 	$pagename_ref['Article-Page']['navbar_tags'] = array('search_bar','LOGIN & REGISTER');
