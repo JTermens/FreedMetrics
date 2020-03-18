@@ -28,7 +28,7 @@ if ($_POST){
 
         $row = mysqli_fetch_row($result);
         $name = $row[0];
-        $fpkey = bin2hex(random_bytes(16));
+        $fpkey = md5(time().$userEmail);
         $recovery_subject = 'Freed Metrics: Password change requested' ;
         $recovery_body = "<p>Dear $name, a request to change your password has been made. Please, follow the link below,
         you will be able to change your password there.<br><br>
